@@ -1,3 +1,4 @@
+"use client"
 import { addToken } from '@/features/todo/Slice';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -17,6 +18,8 @@ const dispatch = useDispatch()
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Login Submitted', loginData);
+    const token = "your-login-token"; 
+  
    dispatch(addToken(token))
   };
 
