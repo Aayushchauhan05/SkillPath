@@ -1,9 +1,12 @@
 "use client"
 import { Provider } from 'react-redux';
 import { store } from './app/store';
+import { AuthProvider } from './utils/context';
+
 
 
 const Providers = ({ children }) => {
+ 
   return (
     <Provider store={store}>
       {children}
@@ -11,4 +14,10 @@ const Providers = ({ children }) => {
   );
 };
 
+
+export const AuthProviders=({children})=>{
+return (<AuthProvider>
+    {children}
+</AuthProvider>)
+}
 export default Providers;

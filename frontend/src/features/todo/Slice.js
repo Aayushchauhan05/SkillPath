@@ -1,28 +1,35 @@
-"use client"
+"use client";
+
 import { createSlice } from "@reduxjs/toolkit";
+import { auth } from "../../utils/firebase"; 
+import { onAuthStateChanged } from "firebase/auth";
 
 const initialState = {
-  token: typeof window !== 'undefined' ? localStorage.getItem("token") : "",
+  currentuser: null,
+  loading: true,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    addToken: (state, action) => {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem("token", action.payload);
-      }
-      state.token = action.payload;
+    setCurrentUser: (state, action) => {
+      state.currentuser = action.payload;
     },
-    removeToken: (state) => {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem("token");
-      }
-      state.token = "";
+    setLoading: (state, action) => {
+      state.loading = action.payload;
     },
   },
 });
 
-export const { addToken, removeToken } = authSlice.actions;
+
+export const loadUser = () => (dispatch) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    dispatch(setCurrentUser(user));
+    dispatch(setLoading(false));
+  });
+  return unsubscribe; 
+};
+
+export const { setCurrentUser, setLoading } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,4 +1,8 @@
 "use client"
+import { auth, db } from '@/utils/firebase';
+import { createUserFireBase } from '@/utils/firebaseAuth';
+import { doc, setDoc } from 'firebase/firestore';
+import { redirect } from 'next/navigation';
 import React, { useState } from 'react';
 
 const RegistrationForm = () => {
@@ -16,14 +20,24 @@ const RegistrationForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!");
-    } else {
-      console.log('Form Submitted', formData);
-      // Handle form submission logic
+    try{
+      await createUserFireBase({email:formData.email,password:formData.password});
+   const user= auth.currentUser;
+   if (user) {
+    await setDoc(doc(db,"user",user.uid),{
+      ...formData,
+      password:"",
+      confirmPassword:""
+    })
+   }
+redirect("/login")
     }
+    catch(e){
+console.log(e)
+    }
+  
   };
 
   return (
