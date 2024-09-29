@@ -1,6 +1,8 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/app/component/Navbar";
+import { firebaseProvider } from "@/context/firebase";
+import { useFirebase } from "@/context/firebase";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,6 +28,7 @@ export default function RootLayout({ children }) {
       >
       <Navbar/>
         {children}
+        <firebaseProvider/>
       </body>
     </html>
   );
