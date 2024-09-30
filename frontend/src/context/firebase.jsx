@@ -1,7 +1,7 @@
 "use client"
 import { createContext, useContext } from "react";
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
@@ -39,7 +39,7 @@ export const FirebaseProvider = ({ children }) => {
     };
 
     return (
-        <FirebaseContext.Provider value={{ firebaseApp,firebaseAuth,database }}>
+        <FirebaseContext.Provider value={{ firebaseApp,firebaseAuth,database,signupUserWithEmailAndPassword,signinUserWithEmailAndPassword  }}>
             {children}
         </FirebaseContext.Provider>
     );

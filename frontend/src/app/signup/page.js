@@ -7,26 +7,29 @@ import Image from 'next/image';
 
 export default function SignUp() {
 
-    const firebase = useFirebase();
+    const {signupUserWithEmailAndPassword} = useFirebase();
     const [email,setEmail] = useState('');
     const[password,setPassword] = useState('');
 
 
 
-    console.log("Firebase",firebase);
 
-
+const handleSubmit= async (e)=>{
+e.preventDefault();
+const user=await signupUserWithEmailAndPassword(email,password);
+console.log(user)
+}
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-500 relative">
+    <div className="relative flex items-center justify-center min-h-screen bg-blue-500">
       
-      <div className="bg-white p-10 rounded-lg shadow-lg z-10 w-full max-w-md">
-        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Sign Up</h2>
+      <div className="z-10 w-full max-w-md p-10 bg-white rounded-lg shadow-lg">
+        <h2 className="mb-6 text-3xl font-semibold text-center text-gray-800">Sign Up</h2>
 
-        <form>
+        <form onSubmit={handleSubmit}>
          
 
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
+            <label htmlFor="email" className="block mb-2 font-medium text-gray-700">
               Email
             </label>
             <input onChange={e=>setEmail(e.target.value)} value={email}
@@ -38,7 +41,7 @@ export default function SignUp() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
+            <label htmlFor="password" className="block mb-2 font-medium text-gray-700">
               Password
             </label>
             <input onChange={e=>setPassword(e.target.value)} value={password}
@@ -50,15 +53,15 @@ export default function SignUp() {
           </div>
 
 
-          <button onSubmit={()=>firebase.signupUserWithEmailAndPassword(email,password)} 
+          <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-200"
+            className="w-full px-4 py-2 text-white transition-all duration-200 bg-blue-600 rounded-lg hover:bg-blue-700"
           >
             Sign Up
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-4">
+        <p className="mt-4 text-center text-gray-600">
           Already have an account?{' '}
           <a href="/signin" className="text-blue-600 hover:underline">
             Sign In
