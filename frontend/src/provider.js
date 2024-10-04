@@ -1,7 +1,7 @@
 "use client"
 import { Provider } from 'react-redux';
 import { store } from './app/store';
-import { AuthProvider } from './utils/context';
+import { AuthProvider } from './context/context';
 
 
 

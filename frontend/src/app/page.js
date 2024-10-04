@@ -1,10 +1,38 @@
 "use client"
-import Navbar from "@/app/component/Navbar";
+
+import Marquee from "react-fast-marquee";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { RiCheckboxCircleFill } from "react-icons/ri";
+
 export default function Home() {
   const [image, setImage] = useState(1)
+  
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const accessKey = 'C_xvbgf6MfzMfmiNDsHU0J4NpbgCnNal-fFuqVOGouI'; 
+
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      try {
+        const response = await fetch(`https://api.unsplash.com/photos?&client_id=${accessKey}`);
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        setPhotos(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPhotos();
+  }, [accessKey]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -20,7 +48,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="bg-gradient-to-tr from-[#101828] to-[#3C288A]">
+    <div className="bg-gradient-to-tr from-[#101828] to-[#3C288A] text-white">
       <section className=" flex justify-around h-full w-[100%] bg-gradient-to-b from-[#111a2b] via-[#3d269a]  to-[#6938EF] pt-20">
         <div className="flex flex-col w-2/6 justify-around min-h-[100vh] ml-[-2vw]">
           <h1 className="text-6xl font-bold ">Grow your <br />startup smarter with advice from mentors</h1>
@@ -31,7 +59,6 @@ export default function Home() {
             <div className="flex justify-evenly"><RiCheckboxCircleFill className="w-6 h-6 " /> <span className="text-lg">Validate ideas before executing</span></div>
             <div className="flex justify-evenly"><RiCheckboxCircleFill className="w-6 h-6 " /> <span className="text-lg">Validate ideas before executing</span></div>
             <div className="flex justify-evenly"><RiCheckboxCircleFill className="w-6 h-6 " /> <span className="text-lg">Validate ideas before executing</span></div>
-
           </div> */}
           <div className="flex justify-evenly ml-[-3vw] mt-6">
             <div className="flex flex-col h-14 "><h1 className="text-xl font-bold">48000+</h1>
@@ -57,6 +84,49 @@ export default function Home() {
       </div>
     </div>
       </section>
+      <section className="bg-[#101828] max-h-full w-full flex flex-col items-center justify-center relative">
+  <Marquee className="absolute left-0 w-full min-h-[50vh]  max-h-[70vh]top-32 ">
+    <div className="grid grid-cols-7 grid-rows-4 gap-x-4 gap-y-6 min-h-[50vh]  max-h-[70vh]">
+      {photos.map((elem, index) => (
+       <div className="w-56 h-56 " key={index}>
+        <Image 
+          key={index} 
+          src={elem.urls.small} 
+          width={300} 
+          height={300} 
+          alt={`Company logo ${index + 1}`} 
+          className="object-cover aspect-square"
+        />
+        </div>
+      ))}
+    </div>
+  </Marquee>
+
+  <div className="relative h-[40vh] w-[30vw] bottom-52 flex flex-col justify-around p-6 rounded-md shadow-xl ite z-10 bg-[#101828]">
+    <h1 className="mb-4 text-lg font-semibold">
+      “It’s insane how I’m able to hop on Zoom calls with hundreds of experts that work at some seriously impressive companies!”
+    </h1>
+    <div className="flex items-center space-x-4">
+      <Image 
+        src="https://www.growthmentor.com/wp-content/uploads/2024/05/testimonial-photo.png" 
+        alt="Jean-Patrick Bisson" 
+        className="rounded-full" 
+        height={50} 
+        width={50} 
+      />
+      <div className="flex flex-col">
+        <h2 className="font-semibold">Jean-Patrick Bisson</h2>
+        <p className="text-sm text-gray-500">CEO & Founder at Geonode.com</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+<section className="bg-[#101828] max-h-full w-full flex flex-col items-center justify-center">
+
+<h1 className="text-[7vh] font-semibold text-white ">Built for founders, marketers, <br/>and product people</h1>
+<div className="grid grid-cols-3 "><div className="h-[50vh] w-60 bg-[#6536E7]"></div></div>
+</section>
     </div>
   );
 }

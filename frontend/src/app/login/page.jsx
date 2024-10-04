@@ -1,5 +1,5 @@
 "use client"; 
-import { useAuth } from "@/utils/context"; 
+import { useAuth } from "@/context/context"; 
 import { SignInWithFirebaseWithEmailAndPassword, signInWithGoogle } from "@/utils/firebaseAuth"; 
 import { useRouter } from "next/navigation"; 
 import React, { useState } from "react";
