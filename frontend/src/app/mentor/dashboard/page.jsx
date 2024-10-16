@@ -163,14 +163,14 @@ export default function Dashboard() {
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Package className="w-5 h-5" />
-                  Products
+                  Appointment
                 </Link>
                 <Link
                   href="#"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Users2 className="w-5 h-5" />
-                  Customers
+                  Meets
                 </Link>
                 <Link
                   href="#"
@@ -192,12 +192,12 @@ export default function Dashboard() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="#">Orders</Link>
+                  <Link href="#">Meets</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Recent Orders</BreadcrumbPage>
+                <BreadcrumbPage>Recent Meets</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -242,14 +242,14 @@ export default function Dashboard() {
                 className="sm:col-span-2" x-chunk="dashboard-05-chunk-0"
               >
                 <CardHeader className="pb-3">
-                  <CardTitle>Your Orders</CardTitle>
+                  <CardTitle>Your sesssions</CardTitle>
                   <CardDescription className="max-w-lg leading-relaxed text-balance">
                     Introducing Our Dynamic Orders Dashboard for Seamless
                     Management and Insightful Analysis.
                   </CardDescription>
                 </CardHeader>
                 <CardFooter>
-                  <Button>Create New Order</Button>
+                  <Button>Create Session</Button>
                 </CardFooter>
               </Card>
               <Card x-chunk="dashboard-05-chunk-1">
@@ -327,16 +327,16 @@ export default function Dashboard() {
               <TabsContent value="week">
                 <Card x-chunk="dashboard-05-chunk-3">
                   <CardHeader className="px-7">
-                    <CardTitle>Orders</CardTitle>
+                    <CardTitle>Session</CardTitle>
                     <CardDescription>
-                      Recent orders from your store.
+                      Recent Session.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Customer</TableHead>
+                          <TableHead>Mentee</TableHead>
                           <TableHead className="hidden sm:table-cell">
                             Type
                           </TableHead>
@@ -517,7 +517,7 @@ export default function Dashboard() {
               </TabsContent>
             </Tabs>
           </div>
-          <div>
+          {/* <div>
             <Card
               className="overflow-hidden" x-chunk="dashboard-05-chunk-4"
             >
@@ -558,10 +558,10 @@ export default function Dashboard() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-              </CardHeader>
-              <CardContent className="p-6 text-sm">
+              </CardHeader> */}
+              {/* <CardContent className="p-6 text-sm">
                 <div className="grid gap-3">
-                  <div className="font-semibold">Order Details</div>
+                  <div className="font-semibold">Meet Details</div>
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
                       <span className="text-muted-foreground">
@@ -670,8 +670,8 @@ export default function Dashboard() {
                   </PaginationContent>
                 </Pagination>
               </CardFooter>
-            </Card>
-          </div>
+            </Card> */}
+          {/* </div> */}
         </main>
       </div>
     </div>

@@ -27,43 +27,43 @@ export const description =
 
 export default function Dashboard() {
   return (
-    <div className="flex min-h-screen w-full flex-col">
-      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-        <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+    <div className="flex flex-col w-full min-h-screen">
+      <header className="sticky top-0 flex items-center h-16 gap-4 px-4 border-b bg-background md:px-6">
+        <nav className="flex-col hidden gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
             href="#"
             className="flex items-center gap-2 text-lg font-semibold md:text-base"
           >
-            <Package2 className="h-6 w-6" />
+            <Package2 className="w-6 h-6" />
             <span className="sr-only">Acme Inc</span>
           </Link>
           <Link
             href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+            className="transition-colors text-muted-foreground hover:text-foreground"
           >
             Dashboard
           </Link>
           <Link
             href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+            className="transition-colors text-muted-foreground hover:text-foreground"
           >
             Orders
           </Link>
           <Link
             href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+            className="transition-colors text-muted-foreground hover:text-foreground"
           >
             Products
           </Link>
           <Link
             href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+            className="transition-colors text-muted-foreground hover:text-foreground"
           >
             Customers
           </Link>
           <Link
             href="#"
-            className="text-foreground transition-colors hover:text-foreground"
+            className="transition-colors text-foreground hover:text-foreground"
           >
             Settings
           </Link>
@@ -75,7 +75,7 @@ export default function Dashboard() {
               size="icon"
               className="shrink-0 md:hidden"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="w-5 h-5" />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
@@ -85,7 +85,7 @@ export default function Dashboard() {
                 href="#"
                 className="flex items-center gap-2 text-lg font-semibold"
               >
-                <Package2 className="h-6 w-6" />
+                <Package2 className="w-6 h-6" />
                 <span className="sr-only">Acme Inc</span>
               </Link>
               <Link
@@ -118,8 +118,8 @@ export default function Dashboard() {
             </nav>
           </SheetContent>
         </Sheet>
-        <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <form className="ml-auto flex-1 sm:flex-initial">
+        <div className="flex items-center w-full gap-4 md:ml-auto md:gap-2 lg:gap-4">
+          <form className="flex-1 ml-auto sm:flex-initial">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -132,7 +132,7 @@ export default function Dashboard() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
+                <CircleUser className="w-5 h-5" />
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
@@ -148,7 +148,7 @@ export default function Dashboard() {
         </div>
       </header>
       <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
-        <div className="mx-auto grid w-full max-w-6xl gap-2">
+        <div className="grid w-full max-w-6xl gap-2 mx-auto">
           <h1 className="text-3xl font-semibold">Settings</h1>
         </div>
         <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
@@ -177,7 +177,7 @@ export default function Dashboard() {
                   <Input placeholder="Store Name" />
                 </form>
               </CardContent>
-              <CardFooter className="border-t px-6 py-4">
+              <CardFooter className="px-6 py-4 border-t">
                 <Button>Save</Button>
               </CardFooter>
             </Card>
@@ -206,7 +206,7 @@ export default function Dashboard() {
                   </div>
                 </form>
               </CardContent>
-              <CardFooter className="border-t px-6 py-4">
+              <CardFooter className="px-6 py-4 border-t">
                 <Button>Save</Button>
               </CardFooter>
             </Card>

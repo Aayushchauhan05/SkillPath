@@ -146,21 +146,21 @@ export const description =
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <ShoppingCart className="w-5 h-5" />
-                  Orders
+                  session
                 </Link>
                 <Link
                   href="#"
                   className="flex items-center gap-4 px-2.5 text-foreground"
                 >
                   <Package className="w-5 h-5" />
-                  Products
+                  Upcoming
                 </Link>
                 <Link
                   href="#"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Users2 className="w-5 h-5" />
-                  Customers
+                  previous session
                 </Link>
                 <Link
                   href="#"
@@ -182,12 +182,12 @@ export const description =
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="#">Products</Link>
+                  <Link href="#">Sessions</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>All Products</BreadcrumbPage>
+                <BreadcrumbPage>All sessions</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -264,18 +264,18 @@ export const description =
                     Export
                   </span>
                 </Button>
-                <Button size="sm" className="h-8 gap-1">
+                {/* <Button size="sm" className="h-8 gap-1">
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Product
                   </span>
-                </Button>
+                </Button> */}
               </div>
             </div>
             <TabsContent value="all">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader>
-                  <CardTitle>Products</CardTitle>
+                  <CardTitle>Session</CardTitle>
                   <CardDescription>
                     Manage your products and view their sales performance.
                   </CardDescription>
@@ -293,7 +293,7 @@ export const description =
                           Price
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Total Sales
+                          Total Meets
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
                           Created at
