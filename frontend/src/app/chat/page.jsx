@@ -66,7 +66,7 @@ export default function ChatDashboard() {
               className="flex items-center justify-around w-full h-24 border-2 border-b-indigo-500"
               onClick={handleChat}
             >
-              {" "}
+             
               <Avatar>
                 <AvatarImage
                   src="https://github.com/shadcn.png"
@@ -92,7 +92,8 @@ export default function ChatDashboard() {
 
       <div className="chat chat-start">
         <div className="chat-bubble chat-bubble-accent">
-          That's never been done in the history of the Jedi. It's insulting!
+        <p>That&apos;s never been done in the history of the Jedi. It&apos;s insulting!</p>
+
         </div>
       </div>
 
