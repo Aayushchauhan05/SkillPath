@@ -33,7 +33,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
+import { loadUser } from "@/features/todo/Slice";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
@@ -43,13 +43,54 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip";
 export const description =
   "An AI playground with a sidebar navigation and a main content area. The playground has a header with a settings drawer and a share button. The sidebar has navigation links and a user menu. The main content area shows a form to configure the model and messages.";
-import {useState} from "react"
+import {useRef, useState,useEffect} from "react"
+import { useSelector,useDispatch } from "react-redux";
+import { useParams } from "next/navigation";
+import AxiosInstance from "@/lib/AxiosInstance";
 export default function ChatDashboard() {
   const [chatToggle, setChatToggle] = useState(false);
+  const dispatch= useDispatch()
+useEffect(() => {
+    const unsubscribe = dispatch(loadUser());
+    return () => unsubscribe(); 
+  }, [dispatch]);
+  const userId = useSelector((state) => state.auth.currentuser?.uid); 
 
+  const {receiverId}=useParams()
+const ref=useRef()
   const handleChat = async () => {
     setChatToggle((prev) => !prev);
   };
+  const createChat= async (e)=>{
+    e.preventDefault();
+    try{
+const formData= new FormData(ref.current)
+const messageText = formData.get('message'); 
+
+console.log(userId)
+if (!messageText || messageText.trim() === '') {
+  console.error("Message cannot be empty");
+  return;
+}
+
+const data={
+  senderId:userId,
+  receiverId: receiverId,
+  message:{
+    sender:
+userId,
+    text: messageText
+  }
+}
+await AxiosInstance.post("chat/createchat",{
+  ...data
+})
+ref.current.reset(); 
+    }
+    catch(e){
+console.log(e);
+    }
+  }
   return (
     <div className="grid h-screen w-full pl-[56px]">
       <aside className="fixed left-0 z-20 flex flex-col h-full border-r inset-y"></aside>
@@ -111,12 +152,15 @@ export default function ChatDashboard() {
       <form
         className="relative overflow-hidden border rounded-lg bg-background focus-within:ring-1 focus-within:ring-ring"
         x-chunk="dashboard-03-chunk-1"
+        onSubmit={createChat}
+        ref={ref}
       >
         <Label htmlFor="message" className="sr-only">
           Message
         </Label>
         <Textarea
-          id="message"
+            name="message" 
+    id="message"
           placeholder="Type your message here..."
           className="p-3 border-0 shadow-none resize-none min-h-12 focus-visible:ring-0"
         />

@@ -1,8 +1,9 @@
 "use client"
+import AxiosInstance from '@/lib/AxiosInstance';
 import { auth, db } from '@/utils/firebase';
 import { createUserFireBase } from '@/utils/firebaseAuth';
 import { doc, setDoc } from 'firebase/firestore';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter} from 'next/navigation';
 import React, { useState } from 'react';
 
 const RegistrationForm = () => {
@@ -11,8 +12,9 @@ const RegistrationForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    role:''
   });
-
+const router=useRouter()
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -30,9 +32,16 @@ const RegistrationForm = () => {
       ...formData,
       password:"",
       confirmPassword:""
+     
+    })
+    await AxiosInstance.post("/Auth/register_user",{
+      _id:user.uid,
+      ...formData,
+      password:"",
+      confirmPassword:""
     })
    }
-redirect("/login")
+router.push("/login")
     }
     catch(e){
 console.log(e)
@@ -95,7 +104,11 @@ console.log(e)
             required
           />
         </div>
-
+        <div className="mb-4">
+          <label className="block mb-2 font-bold text-gray-700">Role:</label>
+         <select name="role" id="role" defaultValue={"mentee"}
+            onChange={handleChange}><option value="mentor">mentor</option><option value="mentee">mentee</option></select>
+        </div>
         <button
           type="submit"
           className="w-full px-4 py-2 font-bold text-white transition duration-300 bg-blue-500 rounded-lg hover:bg-blue-600"

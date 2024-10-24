@@ -1,9 +1,12 @@
 "use client"; 
 import { useAuth } from "@/context/context"; 
+import { loadUser } from "@/features/todo/Slice";
 import { SignInWithFirebaseWithEmailAndPassword, signInWithGoogle } from "@/utils/firebaseAuth"; 
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/navigation"; 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaGoogle } from "react-icons/fa"; 
+import { useDispatch } from "react-redux";
 
 const LoginForm = () => {
   const [loginData, setLoginData] = useState({
@@ -21,12 +24,23 @@ const LoginForm = () => {
       [e.target.name]: e.target.value,
     });
   };
+const getUserByEmail= async (email,user)=>{
+const userCollection=collection(db,"user");
+const userQuery=query(userCollection,where("email"==user.uid))
+const querySnapshot = await getDocs(userQuery);
+if (querySnapshot.empty) {
+  throw new Error("User not found");
+}
 
+const userList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+return userList[0];
+}
   
   const handleSubmit = async  (e) => {
     e.preventDefault();
 const user = await SignInWithFirebaseWithEmailAndPassword({email:loginData.email,password:loginData.password})
 if (user && user._tokenResponse) {
+  console.log(user)
   console.log("Token Response:", user._tokenResponse);
   console.log("Access Token:", user._tokenResponse.idToken); 
   addToken(user._tokenResponse.idToken); 
@@ -39,7 +53,7 @@ console.log(user)
    
   };
 
-  
+  const dispatch = useDispatch();
   const handleGoogleLogin = async () => {
     try {
       const user = await signInWithGoogle();
@@ -49,7 +63,9 @@ console.log(user)
       if (user && user._tokenResponse) {
         console.log("Token Response:", user._tokenResponse);
         console.log("Access Token:", user._tokenResponse.idToken); 
+       
         addToken(user._tokenResponse.idToken); 
+        dispatch(loadUser()); 
         router.push("/"); 
       } else {
         console.error("User or token response is undefined:", user);
@@ -58,7 +74,7 @@ console.log(user)
       console.error("Error during Google login:", error);
     }
   };
-
+  
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <form
