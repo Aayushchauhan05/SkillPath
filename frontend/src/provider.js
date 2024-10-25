@@ -2,6 +2,7 @@
 import { Provider } from 'react-redux';
 import { store } from './app/store';
 import { AuthProvider } from './context/context';
+import { ChatProvider } from './context/chatContext';
 
 
 
@@ -19,5 +20,8 @@ export const AuthProviders=({children})=>{
 return (<AuthProvider>
     {children}
 </AuthProvider>)
+}
+export const ChatProviders=({children})=>{
+ return (<ChatProvider>{children}</ChatProvider>)
 }
 export default Providers;

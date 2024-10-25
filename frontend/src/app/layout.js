@@ -1,7 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/app/component/Navbar";
-import Providers, { AuthProviders } from "@/provider";
+import Providers, { AuthProviders,ChatProviders } from "@/provider";
 import { ThemeProvider } from "@/components/theme-provider/theme-provider";
 
 const geistSans = localFont({
@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <AuthProviders>
+          <ChatProviders>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
             {/* <Navbar /> */}
             {children}
             </ThemeProvider>
+            </ChatProviders>
           </AuthProviders>
         </body>
       </Providers>

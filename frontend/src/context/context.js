@@ -1,16 +1,17 @@
 "use client";
 
 import { createContext, useState, useEffect, useContext } from "react";
+import { useDispatch } from "react-redux";
 
 export const AuthContext = createContext();
-
+import { loadUser } from "@/features/todo/Slice";
 export function useAuth() {
   return useContext(AuthContext);
 }
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState("");
-
+ const dispatch=useDispatch()
   useEffect(() => {
     const storedToken =  localStorage.getItem("token") || "";
     setToken(storedToken);
@@ -35,6 +36,10 @@ export function AuthProvider({ children }) {
     addToken,
     removeToken,
   };
+
+  useEffect(() => {
+    dispatch(loadUser());
+  }, [dispatch]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

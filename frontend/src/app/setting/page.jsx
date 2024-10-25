@@ -75,6 +75,7 @@ export default function Dashboard() {
               size="icon"
               className="shrink-0 md:hidden"
             >
+            
               <Menu className="w-5 h-5" />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>

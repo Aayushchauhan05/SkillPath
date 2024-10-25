@@ -49,6 +49,7 @@ import { useParams } from "next/navigation";
 import AxiosInstance from "@/lib/AxiosInstance";
 export default function ChatDashboard() {
   const [chatToggle, setChatToggle] = useState(false);
+  const [chats,setChats]=useState([])
   const dispatch= useDispatch()
 useEffect(() => {
     const unsubscribe = dispatch(loadUser());
@@ -91,6 +92,19 @@ ref.current.reset();
 console.log(e);
     }
   }
+
+  const fetchChat= async ()=>{
+    try {
+      const response= await AxiosInstance.get(`chat/chats/${userId}/${receiverId}`);
+      console.log(response)
+      setChats(response.data);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(()=>{
+    fetchChat()
+  },[chatToggle])
   return (
     <div className="grid h-screen w-full pl-[56px]">
       <aside className="fixed left-0 z-20 flex flex-col h-full border-r inset-y"></aside>
@@ -122,31 +136,17 @@ console.log(e);
             </div>
           </div>
           {chatToggle?<div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
-      <Badge variant="outline" className="absolute right-3 top-3">
-        Output
-      </Badge>
-      <div className="chat chat-start">
-        <div className="chat-bubble chat-bubble-primary">
-          What kind of nonsense is this
+           
+      {chats.map((elem)=>
+       ( <div className={`chat chat-${elem.message.sender==userId?"end":"start"}`}>
+        <div className={`chat-bubble ${elem.message.sender==userId?"chat-bubble-success":"chat-bubble-info"} `}>
+         {elem.message.text}
         </div>
-      </div>
+      </div>)
+      )}
+     
 
-      <div className="chat chat-start">
-        <div className="chat-bubble chat-bubble-accent">
-        <p>That&apos;s never been done in the history of the Jedi. It&apos;s insulting!</p>
-
-        </div>
-      </div>
-
-      <div className="chat chat-end">
-        <div className="chat-bubble chat-bubble-info">Calm down, Anakin.</div>
-      </div>
-
-      <div className="chat chat-end">
-        <div className="chat-bubble chat-bubble-success">
-          You have been given a great honor.
-        </div>
-      </div>
+      
 
       <div className="flex-1" />
       <form
@@ -182,7 +182,7 @@ console.log(e);
                   <span className="sr-only">Use Microphone</span>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="top">Use Microphone</TooltipContent>
+              <TooltipContent side=  "top">Use Microphone</TooltipContent>
             </Tooltip>
           </TooltipProvider>
           <Button type="submit" size="sm" className="ml-auto gap-1.5">
