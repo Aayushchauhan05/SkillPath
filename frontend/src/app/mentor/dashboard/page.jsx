@@ -76,6 +76,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { TooltipProvider } from "@/components/ui/tooltip"; 
+import EventDialog from "@/app/component/Session"
 export const description =
   "An orders dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. The main area has a list of recent orders with a filter and export button. The main area also has a detailed view of a single order with order details, shipping information, billing information, customer information, and payment information."
 
@@ -249,7 +250,7 @@ export default function Dashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardFooter>
-                  <Button>Create Session</Button>
+                  <EventDialog/>
                 </CardFooter>
               </Card>
               <Card x-chunk="dashboard-05-chunk-1">
