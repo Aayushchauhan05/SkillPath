@@ -104,7 +104,7 @@ console.log(e);
   }
   useEffect(()=>{
     fetchChat()
-  },[chatToggle])
+  },[chatToggle,fetchChat])
   return (
     <div className="grid h-screen w-full pl-[56px]">
       <aside className="fixed left-0 z-20 flex flex-col h-full border-r inset-y"></aside>
@@ -137,8 +137,8 @@ console.log(e);
           </div>
           {chatToggle?<div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
            
-      {chats.map((elem)=>
-       ( <div className={`chat chat-${elem.message.sender==userId?"end":"start"}`}>
+      {chats.map((elem,index)=>
+       ( <div key={index} className={`chat chat-${elem.message.sender==userId?"end":"start"}`}>
         <div className={`chat-bubble ${elem.message.sender==userId?"chat-bubble-success":"chat-bubble-info"} `}>
          {elem.message.text}
         </div>
