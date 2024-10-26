@@ -3,6 +3,7 @@
 import Marquee from "react-fast-marquee";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Navbar from "./component/Navbar";
 
 export default function Home() {
   const [image, setImage] = useState(1)
@@ -49,6 +50,7 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-tr from-[#101828] to-[#3C288A] text-white">
+    <Navbar/>
       <section className=" flex justify-around h-full w-[100%] bg-gradient-to-b from-[#111a2b] via-[#3d269a]  to-[#6938EF] pt-20">
         <div className="flex flex-col w-2/6 justify-around min-h-[100vh] ml-[-2vw]">
           <h1 className="text-6xl font-bold ">Grow your <br />startup smarter with advice from mentors</h1>

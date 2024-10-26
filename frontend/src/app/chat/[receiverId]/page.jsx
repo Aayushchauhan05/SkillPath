@@ -47,6 +47,7 @@ import {useRef, useState,useEffect} from "react"
 import { useSelector,useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import AxiosInstance from "@/lib/AxiosInstance";
+import Navbar from "@/app/component/Navbar";
 export default function ChatDashboard() {
   const [chatToggle, setChatToggle] = useState(false);
   const [chats,setChats]=useState([])
@@ -105,7 +106,8 @@ console.log(e);
   useEffect(()=>{
     fetchChat()
   },[chatToggle,fetchChat])
-  return (
+  return (<>
+  <Navbar/>
     <div className="grid h-screen w-full pl-[56px]">
       <aside className="fixed left-0 z-20 flex flex-col h-full border-r inset-y"></aside>
       <div className="flex flex-col">
@@ -201,6 +203,6 @@ console.log(e);
     </Card>}
         </main>
       </div>
-    </div>
+    </div></>
   );
 }

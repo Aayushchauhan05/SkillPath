@@ -51,8 +51,8 @@ const EventDialog = () => {
       attendees,
     };
 
-    console.log(eventData); // Handle the form submission logic here
-    setOpen(false); // Close the dialog after submission
+    console.log(eventData);
+    setOpen(false); 
   };
 
   const handleAttendeeChange = (index, value) => {
