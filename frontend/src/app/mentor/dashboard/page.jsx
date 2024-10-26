@@ -278,19 +278,19 @@ fetchData()
               </Card>
               <Card x-chunk="dashboard-05-chunk-1">
                 <CardHeader className="pb-2">
-                  <CardDescription>This Week</CardDescription>
-                  <CardTitle className="text-4xl">$1,329</CardTitle>
+                  <CardDescription>Total revenue</CardDescription>
+                  <CardTitle className="text-4xl"> ₹ {listing.reduce((Total,elem)=>(Total+elem.sessionPrice),0)}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-xs text-muted-foreground">
+                  {/* <div className="text-xs text-muted-foreground">
                     +25% from last week
-                  </div>
+                  </div> */}
                 </CardContent>
                 <CardFooter>
                   <Progress value={25} aria-label="25% increase" />
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2">
+              {/* <Card x-chunk="dashboard-05-chunk-2">
                 <CardHeader className="pb-2">
                   <CardDescription>This Month</CardDescription>
                   <CardTitle className="text-4xl">$5,329</CardTitle>
@@ -303,7 +303,7 @@ fetchData()
                 <CardFooter>
                   <Progress value={12} aria-label="12% increase" />
                 </CardFooter>
-              </Card>
+              </Card> */}
             </div>
             <Tabs defaultValue="week">
               <div className="flex items-center">
