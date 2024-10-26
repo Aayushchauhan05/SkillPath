@@ -77,7 +77,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { TooltipProvider } from "@/components/ui/tooltip"; 
-import { useState,useEffect } from "react"
+import { useState,useEffect,useCallback } from "react"
 import AxiosInstance from "@/lib/AxiosInstance"
 import { useSelector,useDispatch } from "react-redux"
 import { loadUser } from "@/features/todo/Slice";
@@ -93,14 +93,14 @@ useEffect(() => {
     return () => unsubscribe(); 
   }, [dispatch]);
   const userId= useSelector(state=>state.auth.currentuser?.uid);
-  const fetchData= async ()=>{
+  const fetchData= useCallback (async ()=>{
     try {
        const response= await AxiosInstance.get(`/listing/get_listings_by_mentor/${userId}`);
        setListing(response.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  },[])
   useEffect(()=>{
 fetchData()
   },[fetchData])
