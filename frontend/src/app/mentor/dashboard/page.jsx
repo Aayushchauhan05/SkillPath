@@ -81,7 +81,7 @@ import { useState,useEffect } from "react"
 import AxiosInstance from "@/lib/AxiosInstance"
 import { useSelector,useDispatch } from "react-redux"
 import { loadUser } from "@/features/todo/Slice";
-// import EventDialog from "@/app/component/Session"
+import EventDialog from "@/app/component/Session"
 export const description =
   "An orders dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. The main area has a list of recent orders with a filter and export button. The main area also has a detailed view of a single order with order details, shipping information, billing information, customer information, and payment information."
 
@@ -273,13 +273,17 @@ fetchData()
                   </CardDescription>
                 </CardHeader>
                 <CardFooter>
-                  {/* <EventDialog/> */}
+                  <EventDialog/>
                 </CardFooter>
               </Card>
               <Card x-chunk="dashboard-05-chunk-1">
                 <CardHeader className="pb-2">
                   <CardDescription>Total revenue</CardDescription>
-                  <CardTitle className="text-4xl"> ₹ {listing.reduce((Total,elem)=>(Total+elem.sessionPrice),0)}</CardTitle>
+                  <CardTitle className="text-4xl"> 
+  ₹ {listing.reduce((Total, elem) => {
+      return elem.sessionStatus === "completed" ? Total + elem.sessionPrice : Total;
+  }, 0)}
+</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {/* <div className="text-xs text-muted-foreground">
@@ -308,9 +312,9 @@ fetchData()
             <Tabs defaultValue="week">
               <div className="flex items-center">
                 <TabsList>
-                  <TabsTrigger value="week">Week</TabsTrigger>
-                  <TabsTrigger value="month">Month</TabsTrigger>
-                  <TabsTrigger value="year">Year</TabsTrigger>
+                  <TabsTrigger value="week">Active</TabsTrigger>
+                  <TabsTrigger value="month">Completed</TabsTrigger>
+                  <TabsTrigger value="year">Decline</TabsTrigger>
                 </TabsList>
                 <div className="flex items-center gap-2 ml-auto">
                   <DropdownMenu>
