@@ -53,7 +53,7 @@ export default function Home() {
     <Navbar/>
       <section className=" flex justify-around h-full w-[100%] bg-gradient-to-b from-[#111a2b] via-[#3d269a]  to-[#6938EF] pt-20">
         <div className="flex flex-col w-2/6 justify-around min-h-[100vh] ml-[-2vw]">
-          <h1 className="text-6xl font-bold ">Grow your <br />startup smarter with advice from mentors</h1>
+          <h1 className="text-6xl font-bold ">Grow your <br />skills  with advice from mentors</h1>
           <p className="font-sans text-xl font-thin">Book unlimited 1:1 video calls with hundreds of different mentors for a single flat-rate subscription.</p>
           <div className="flex justify-evenly ml-[-3vw]"> <button className="  w-56 bg-[#6952c4] h-16 rounded-3xl">Explore Membership</button> <button className="w-56 h-16 border-2 border-white rounded-3xl"> How it works</button></div>
           {/* <div className="flex flex-col h-48 w-80 justify-evenly">

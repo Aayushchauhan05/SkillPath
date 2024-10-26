@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useCallback, useState,useEffect } from 'react'
 import {
     Tooltip,
     TooltipContent,
@@ -22,7 +22,22 @@ import {
     Users2,
   } from "lucide-react"
   import Link from "next/link"
+import AxiosInstance from '@/lib/AxiosInstance';
 function page() {
+  const [listing, setListing] = useState([]);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await AxiosInstance.get("listing/get_all_listings");
+      setListing(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
     return (
         <div>
          <TooltipProvider>
@@ -85,12 +100,13 @@ function page() {
   </div>
 </div> */}
 <div className='grid w-[92vw] h-full justify-center overflow-y-auto md:ml-24'>
-{[...Array(20)].map((elem,index)=>(<div key={index} className="mx-4 my-4 shadow-xl card bg-base-100 md:w-[85vw] md: h-[40vh]">
+{listing.map((elem,index)=>(<div key={index} className="mx-4 my-4 shadow-xl card bg-base-100 md:w-[85vw] md: h-[40vh]">
   <div className=" card-body">
-    <h2 className="card-title">Card title!</h2>
-    <p>If a dog chews shoes whose shoes does he choose?</p>
+    <h2 className="text-3xl card-title ">{elem?.topic}</h2>
+    <p className='text-xl '>{elem.description}</p>
+    <p className='text-lg '> domain:{elem.domain}</p>
     <div className="justify-end card-actions">
-      <button className="btn btn-primary">Buy Now</button>
+      <button className="btn btn-primary">{`Pay now ₹${elem?.sessionPrice}`}</button>
     </div>
   </div>
 </div>))}

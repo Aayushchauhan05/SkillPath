@@ -107,7 +107,7 @@ console.log(e);
     fetchChat()
   },[chatToggle,fetchChat])
   return (<>
-  <Navbar/>
+  {/* <Navbar/> */}
     <div className="grid h-screen w-full pl-[56px]">
       <aside className="fixed left-0 z-20 flex flex-col h-full border-r inset-y"></aside>
       <div className="flex flex-col">

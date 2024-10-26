@@ -44,7 +44,8 @@ const router=useRouter()
 router.push("/login")
     }
     catch(e){
-console.log(e)
+      await auth.currentUser.delete();
+
     }
   
   };
