@@ -52,7 +52,7 @@ export default function Navbar() {
             <li><Link href={"/registration"}>Register</Link></li>
             <li><Link href={"/mentor/dashboard"}>Mentor</Link></li>
             <li><Link href={"/mentee/dashboard"}>mentee</Link></li>
-            <li><Link href={"/marketplace"}>marketplace</Link></li>
+            <li><Link href={"/mentee/marketplace"}>marketplace</Link></li>
             <li><Link href={""}>chat</Link></li>
           </ul>
         </details>
@@ -61,7 +61,7 @@ export default function Navbar() {
     </ul>
   </div>
   <div className="navbar-end">
-    <Link href={""} className="btn">Button</Link>
+    <Link href={"/logout"} className="btn">Logout</Link>
   </div>
 </div>
 

@@ -47,5 +47,6 @@ export const loadUser = () => (dispatch) => {
   return unsubscribe; 
 };
 
+// export const userData
 export const { setCurrentUser, setLoading } = authSlice.actions;
 export default authSlice.reducer;

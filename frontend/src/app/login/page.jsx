@@ -6,67 +6,79 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/navigation"; 
 import React, { useEffect, useState } from "react";
 import { FaGoogle } from "react-icons/fa"; 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Cookies from 'js-cookie';
+import { db } from "@/utils/firebase";
 
 const LoginForm = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
-
+const userId=useSelector(state=>state.currentuser?.uid)
   const { addToken } = useAuth();
-  const router = useRouter(); 
+  const router = useRouter();
+  const dispatch = useDispatch();
 
-  
   const handleChange = (e) => {
     setLoginData({
       ...loginData,
       [e.target.name]: e.target.value,
     });
   };
-const getUserByEmail= async (email,user)=>{
-const userCollection=collection(db,"user");
-const userQuery=query(userCollection,where("email"==user.uid))
-const querySnapshot = await getDocs(userQuery);
-if (querySnapshot.empty) {
-  throw new Error("User not found");
-}
 
-const userList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-return userList[0];
-}
-  
-  const handleSubmit = async  (e) => {
-    e.preventDefault();
-const user = await SignInWithFirebaseWithEmailAndPassword({email:loginData.email,password:loginData.password})
-if (user && user._tokenResponse) {
-  console.log(user)
-  console.log("Token Response:", user._tokenResponse);
-  console.log("Access Token:", user._tokenResponse.idToken); 
-  addToken(user._tokenResponse.idToken); 
-  router.push("/"); 
-} else {
-  console.error("User or token response is undefined:", user);
-}
-console.log(user)
-    console.log("Login Submitted", loginData);
-   
+  const getUser = async (user) => {
+    const userCollection = collection(db, "user");
+    const userQuery = query(userCollection, where("email", "==", user.email));
+
+    const querySnapshot = await getDocs(userQuery);
+    console.log("data>>>>",querySnapshot.docs[0].data())
+
+    if (querySnapshot.empty) {
+      throw new Error("User not found");
+    }
+
+    const userData = querySnapshot.docs[0].data();
+    console.log("userdata",userData);
+    Cookies.set("role",userData.role);
   };
 
-  const dispatch = useDispatch();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const user = await SignInWithFirebaseWithEmailAndPassword({
+        email: loginData.email,
+        password: loginData.password,
+      });
+      console.log(user)
+
+      if (user && user._tokenResponse) {
+        addToken(user._tokenResponse.idToken);
+        Cookies.set("token", user._tokenResponse.idToken, { expires: 7 });
+        await getUser (user.user)
+       Cookies.set("user", user.user.uid);
+        router.push("/");
+      } else {
+        console.error("User or token response is undefined:", user);
+      }
+    } catch (error) {
+      console.error("Error during sign-in:", error); // Added error handling
+    }
+  };
+
   const handleGoogleLogin = async () => {
     try {
       const user = await signInWithGoogle();
       console.log("User object:", user);
 
-      
       if (user && user._tokenResponse) {
-        console.log("Token Response:", user._tokenResponse);
-        console.log("Access Token:", user._tokenResponse.idToken); 
-       
-        addToken(user._tokenResponse.idToken); 
-        dispatch(loadUser()); 
-        router.push("/"); 
+        addToken(user._tokenResponse.idToken);
+        dispatch(loadUser());
+        Cookies.set("token", user._tokenResponse.idToken, { expires: 7 });
+        await getUser (user.user)
+        Cookies.set("user",user.user.uid);
+        router.push("/");
       } else {
         console.error("User or token response is undefined:", user);
       }
