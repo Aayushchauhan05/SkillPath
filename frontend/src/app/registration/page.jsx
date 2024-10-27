@@ -12,7 +12,7 @@ const RegistrationForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role:''
+    role:'mentee'
   });
 const router=useRouter()
   const handleChange = (e) => {

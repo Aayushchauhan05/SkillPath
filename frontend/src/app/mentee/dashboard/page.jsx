@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import {
+  BaggageClaimIcon,
   File,
   Home,
   LineChart,
@@ -92,6 +93,15 @@ export const description =
               >
                 <Home className="w-5 h-5" />
                 <span className="sr-only">Dashboard</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipTrigger asChild>
+              <Link
+                href={"/mentee/marketplace"}
+                className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 text-muted-foreground hover:text-foreground md:h-8 md:w-8"
+              >
+                <BaggageClaimIcon className="w-5 h-5" />
+                <span className="sr-only">Market</span>
               </Link>
             </TooltipTrigger>
             <TooltipContent side="right">Dashboard</TooltipContent>
