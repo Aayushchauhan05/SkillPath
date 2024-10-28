@@ -142,7 +142,7 @@ export default function Page() {
             <CardHeader>
               <CardTitle>Session Details</CardTitle>
               <CardDescription>
-                Make changes to your account here. Click save when you're done.
+                Make changes to your account here. Click save when you are done.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">

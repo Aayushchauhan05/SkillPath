@@ -135,7 +135,7 @@ const LoginForm = () => {
             </Button>
           </form>
         </CardContent>
-        <p>Don't have a account? <Link href={"/registration"} className="text-red-400">Registration</Link></p>
+        <p>Do not have a account? <Link href={"/registration"} className="text-red-400">Registration</Link></p>
       </Card>
     </div>
   );
