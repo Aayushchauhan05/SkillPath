@@ -1,20 +1,41 @@
-"use client"
-import AxiosInstance from '@/lib/AxiosInstance';
-import { auth, db } from '@/utils/firebase';
-import { createUserFireBase } from '@/utils/firebaseAuth';
-import { doc, setDoc } from 'firebase/firestore';
-import { redirect, useRouter} from 'next/navigation';
-import React, { useState } from 'react';
+"use client";
+
+import AxiosInstance from "@/lib/AxiosInstance";
+import { auth, db } from "@/utils/firebase";
+import { createUserFireBase } from "@/utils/firebaseAuth";
+import { doc, setDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role:'mentee'
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "mentee",
   });
-const router=useRouter()
+  const router = useRouter();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,99 +45,123 @@ const router=useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      await createUserFireBase({email:formData.email,password:formData.password});
-   const user= auth.currentUser;
-   if (user) {
-    await setDoc(doc(db,"user",user.uid),{
-      ...formData,
-      password:"",
-      confirmPassword:""
-     
-    })
-    await AxiosInstance.post("/Auth/register_user",{
-      _id:user.uid,
-      ...formData,
-      password:"",
-      confirmPassword:""
-    })
-   }
-router.push("/login")
-    }
-    catch(e){
+    try {
+      await createUserFireBase({
+        email: formData.email,
+        password: formData.password,
+      });
+      const user = auth.currentUser;
+      if (user) {
+        await setDoc(doc(db, "user", user.uid), {
+          ...formData,
+          password: "",
+          confirmPassword: "",
+        });
+        await AxiosInstance.post("/Auth/register_user", {
+          _id: user.uid,
+          ...formData,
+          password: "",
+          confirmPassword: "",
+        });
+      }
+      router.push("/login");
+    } catch (e) {
       await auth.currentUser.delete();
-
     }
-  
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md p-8 bg-white rounded shadow-md"
-      >
-        <h2 className="mb-6 text-2xl font-bold text-center">Register</h2>
+    <div className="flex items-center justify-center h-screen bg-black">
+      <Card className="w-full max-w-md p-6 bg-gray-900 border border-gray-700 shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center text-gray-100">Register</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="username" className="text-gray-400">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Username"
+                required
+                className="text-gray-300 bg-gray-800 border-gray-700"
+              />
+            </div>
 
-        <div className="mb-4">
-          <label className="block mb-2 font-bold text-gray-700">Username</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-gray-400">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email"
+                required
+                className="text-gray-300 bg-gray-800 border-gray-700"
+              />
+            </div>
 
-        <div className="mb-4">
-          <label className="block mb-2 font-bold text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-gray-400">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                required
+                className="text-gray-300 bg-gray-800 border-gray-700"
+              />
+            </div>
 
-        <div className="mb-4">
-          <label className="block mb-2 font-bold text-gray-700">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="confirmPassword" className="text-gray-400">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm Password"
+                required
+                className="text-gray-300 bg-gray-800 border-gray-700"
+              />
+            </div>
 
-        <div className="mb-4">
-          <label className="block mb-2 font-bold text-gray-700">Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-bold text-gray-700">Role:</label>
-         <select name="role" id="role" defaultValue={"mentee"}
-            onChange={handleChange}><option value="mentor">mentor</option><option value="mentee">mentee</option></select>
-        </div>
-        <button
-          type="submit"
-          className="w-full px-4 py-2 font-bold text-white transition duration-300 bg-blue-500 rounded-lg hover:bg-blue-600"
-        >
-          Register
-        </button>
-      </form>
+            <div className="space-y-1.5">
+              <Label htmlFor="role" className="text-gray-400">Role</Label>
+              <Select
+                name="role"
+                value={formData.role}
+                onValueChange={(value) => setFormData({ ...formData, role: value })}
+              >
+                <SelectTrigger className="text-gray-300 bg-gray-800 border-gray-700">
+                  <SelectValue placeholder="Select Role" />
+                </SelectTrigger>
+                <SelectContent className="text-gray-300 bg-gray-800 border-gray-700">
+                  <SelectItem value="mentor">Mentor</SelectItem>
+                  <SelectItem value="mentee">Mentee</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-end space-x-2">
+          <Button variant="outline" type="button" onClick={() => router.push("/")} className="text-gray-300 border-gray-700 hover:bg-gray-700">
+            Cancel
+          </Button>
+          <Button type="submit" onClick={handleSubmit} className="text-gray-100 bg-indigo-600 hover:bg-indigo-700">
+            Register
+          </Button>
+        </CardFooter>
+        <p>Already have a account? <Link href={"/login"} className="text-red-400">Login</Link></p>
+      </Card>
     </div>
   );
 };

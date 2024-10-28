@@ -47,7 +47,7 @@ function Page() {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Link
-                                    href={"/mentee/dashboard"}
+                                    href={"/mentor/dashboard"}
                                     className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 text-muted-foreground hover:text-foreground md:h-8 md:w-8"
                                 >
                                     <Home className="w-5 h-5" />

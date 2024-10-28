@@ -2,6 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import {
+  BaggageClaimIcon,
   ChevronLeft,
   ChevronRight,
   Copy,
@@ -92,18 +93,23 @@ useEffect(() => {
     const unsubscribe = dispatch(loadUser());
     return () => unsubscribe(); 
   }, [dispatch]);
-  const userId= useSelector(state=>state.auth.currentuser?.uid);
-  const fetchData= useCallback (async ()=>{
+  const userId=  useSelector(state=>state.auth.currentuser?.uid);
+  const fetchData = useCallback(async () => {
     try {
-       const response= await AxiosInstance.get(`/listing/get_listings_by_mentor/${userId}`);
-       setListing(response.data);
+      if (!userId) {
+        console.error('User ID is undefined');
+        return;
+      }
+      console.log(`Fetching listings for user ID: ${userId}`);
+      const response = await AxiosInstance.get(`/listing/get_listings_by_mentor/${userId}`);
+      setListing(response.data);
     } catch (error) {
       console.log(error);
     }
-  },[])
+  }, [userId]);
   useEffect(()=>{
 fetchData()
-  },[fetchData])
+  },[fetchData,userId])
   return (
     <div className="flex flex-col w-full min-h-screen bg-muted/40">
        <TooltipProvider>
@@ -129,6 +135,15 @@ fetchData()
               </Link>
             </TooltipTrigger>
             <TooltipContent side="right">Dashboard</TooltipContent>
+            <TooltipTrigger asChild>
+              <Link
+                href={"/mentor/marketplace"}
+                className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 text-muted-foreground hover:text-foreground md:h-8 md:w-8"
+              >
+                <BaggageClaimIcon className="w-5 h-5" />
+                <span className="sr-only">Market</span>
+              </Link>
+            </TooltipTrigger>
           </Tooltip>
 
           {/* Repeat for other Tooltips... */}
@@ -375,6 +390,9 @@ fetchData()
                             Date
                           </TableHead>
                           <TableHead className="text-right">Amount</TableHead>
+                          <TableHead className="hidden md:table-cell">
+                           view
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -397,6 +415,9 @@ fetchData()
                             {elem.start}
                           </TableCell>
                           <TableCell className="text-right">{` ₹ ${elem?.sessionPrice}`}</TableCell>
+                          <TableCell className="hidden md:table-cell">
+                           <Link href={`/mentor/dashboard/${elem._id}`}>View</Link>
+                          </TableCell>
                         </TableRow>))}
                         
                       </TableBody>

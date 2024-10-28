@@ -37,9 +37,6 @@ export function AuthProvider({ children }) {
     removeToken,
   };
 
-  useEffect(() => {
-    dispatch(loadUser());
-  }, [dispatch]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
