@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/app/component/Navbar";
 import Providers, { AuthProviders,ChatProviders } from "@/provider";
 import { ThemeProvider } from "@/components/theme-provider/theme-provider";
+import { Analytics } from '@vercel/analytics/react';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
             </ThemeProvider>
             </ChatProviders>
           </AuthProviders>
+          <Analytics />
         </body>
       </Providers>
     </html>

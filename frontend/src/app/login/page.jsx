@@ -32,16 +32,19 @@ const LoginForm = () => {
   };
 
   const getUser = async (user) => {
-    const userCollection = collection(db, "user");
-    const userQuery = query(userCollection, where("email", "==", user.email));
-    const querySnapshot = await getDocs(userQuery);
-
-    if (querySnapshot.empty) {
-      throw new Error("User not found");
-    }
-
-    const userData = querySnapshot.docs[0].data();
-    Cookies.set("role", userData.role);
+    console.log(user.email)
+      const userCollection = collection(db, "user");
+      const userQuery = query(userCollection, where("email", "==", user.email));
+      const querySnapshot = await getDocs(userQuery);
+  
+      if (querySnapshot.empty) {
+        throw new Error("User not found");
+      }
+  
+      const userData = querySnapshot.docs[0].data();
+      Cookies.set("role", userData.role); 
+  
+    
   };
 
   const handleSubmit = async (e) => {
@@ -56,6 +59,7 @@ const LoginForm = () => {
         addToken(user._tokenResponse.idToken);
         Cookies.set("token", user._tokenResponse.idToken, { expires: 7 });
         await getUser(user.user);
+        console.log(user.user)
         Cookies.set("user", user.user.uid);
         router.push("/");
       }
