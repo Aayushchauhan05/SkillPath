@@ -76,8 +76,7 @@ import {
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 export const description = "A bar chart"
-export const description =
-  "An products dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. It displays a list of products in a table with actions."
+
   const chartData = [
     { month: "January", desktop: 186 },
     { month: "February", desktop: 305 },
@@ -91,7 +90,7 @@ export const description =
       label: "Desktop",
       color: "hsl(var(--chart-1))",
     },
-  } satisfies ChartConfig
+  } 
  function Dashboard() {
   return (
     <div className="flex flex-col w-full min-h-screen bg-muted/40">
@@ -122,7 +121,7 @@ export const description =
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          Trending up by 5.2% this month <TrendingUp className="w-4 h-4" />
         </div>
         <div className="leading-none text-muted-foreground">
           Showing total visitors for the last 6 months
