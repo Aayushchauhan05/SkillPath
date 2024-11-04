@@ -14,18 +14,9 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCurrentUser: (state, action) => {
-      console.log(action.payload)
-      const user = action.payload;
-      console.log("Setting current user:", user.uid,user.email);
-      if (user) {
-        
-        state.currentuser = {
-          uid: user.uid,
-          providerId: user.providerId,
-          ...user,
-          email:user.email
-        
-        };
+      const { uid, email, providerId } = action.payload || {};
+      if (action.payload) {
+        state.currentuser = { uid, email, providerId };
       } else {
         state.currentuser = null; 
       }
@@ -36,17 +27,22 @@ const authSlice = createSlice({
   },
 });
 
-
 export const loadUser = () => (dispatch) => {
   const unsubscribe = onAuthStateChanged(auth, (user) => {
-    console.log("Auth state changed:", user);
-    dispatch(setCurrentUser(user));
-  
+    if (user) {
+      const userData = {
+        uid: user.uid,
+        email: user.email,
+        providerId: user.providerId,
+      };
+      dispatch(setCurrentUser(userData));
+    } else {
+      dispatch(setCurrentUser(null));
+    }
     dispatch(setLoading(false));
   });
   return unsubscribe; 
 };
 
-// export const userData
 export const { setCurrentUser, setLoading } = authSlice.actions;
 export default authSlice.reducer;

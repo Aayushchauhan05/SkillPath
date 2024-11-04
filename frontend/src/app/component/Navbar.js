@@ -34,7 +34,7 @@ export default function Navbar() {
         <li><Link href={""}>Item 3</Link></li>
       </ul>
     </div>
-    <Link href={""} className="text-xl btn btn-ghost">daisyUI</Link>
+    <Link href={"/"} className="text-xl btn btn-ghost">Skill Path</Link>
   </div>
   <div className="hidden navbar-center lg:flex">
     <ul className="px-1 menu menu-horizontal">
