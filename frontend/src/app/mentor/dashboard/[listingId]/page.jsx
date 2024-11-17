@@ -46,8 +46,12 @@ import {
   import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"; 
 import { Select } from "@/components/ui/select"; 
-import { useState } from "react";
+import { useState,useEffect,useCallback } from "react";
 import SideBar from "@/app/component/MentorSideBar";
+import AxiosInstance from "@/lib/AxiosInstance"
+import { loadUser } from "@/features/todo/Slice";
+import { useAuth } from "@/context/context";
+import { useSelector,useDispatch } from "react-redux"
 export default function Page() {
     const [summary, setSummary] = useState(""); 
     const [description, setDescription] = useState(""); 
@@ -55,6 +59,10 @@ export default function Page() {
     const [endDate, setEndDate] = useState(""); 
     const [attendeeEmail, setAttendeeEmail] = useState(""); 
     const [responseStatus, setResponseStatus] = useState("needsAction");
+    const[menteeId,setMenteeId]=useState()
+    const[data,setData]=useState()
+    const{code, getCode}=useAuth()
+   const [mentees,setMentees]=useState([])
   const sessionDetails = {
     _id: "671cf6f16db2d73481b134bd",
     mentorId: "wVlnTbBZE9Q82FaztTVr6cUUkhQ2",
@@ -67,29 +75,82 @@ export default function Page() {
     end: "2024-10-28T14:00:24.475Z",
   };
 
-  const mentees = [
-    {
-      name: "John Doe",
-      email: "johndoe@example.com",
-      googleMeetLink: "https://meet.google.com/example",
-      startTime: "2024-10-27T14:00:24.475Z",
-      endTime: "2024-10-27T15:00:24.475Z",
-    },
-    {
-      name: "Jane Smith",
-      email: "janesmith@example.com",
-      googleMeetLink: "https://meet.google.com/example2",
-      startTime: "2024-10-28T14:00:24.475Z",
-      endTime: "2024-10-28T15:00:24.475Z",
-    },
-  ];
+  
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedMentee, setSelectedMentee] = useState(null);
+  const [selectedMentee, setSelectedMentee] = useState({
+    mentorId:"",
+    summary:"",
+    description:"",
+    startDate:"",
+    endDate:"",
+    attendees: [{ email: attendeeEmail }] ,
+    menteeId:""
+  });
+  const dispatch= useDispatch()
+  useEffect(()=>{
+    getCode();
+  },[])
+useEffect(() => {
+    const unsubscribe = dispatch(loadUser());
+    return () => unsubscribe(); 
+  }, [dispatch]);
+ const mentorId=  useSelector(state=>state.auth.currentuser?.uid);
 
-  const handleAccept = (mentee) => {
-    setSelectedMentee(mentee);
-    setOpenDialog(true);
+  const createMeeting = async (data) => {
+    try {
+      const tokens=localStorage.getItem("oAuthToken")
+      const response = await AxiosInstance.post(
+        `meet/createmeet?mentorId=${mentorId}&menteeId=${data.menteeId}&code=${data.code}&tokens=${tokens}`,
+        { ...data }
+      );
+      console.log("Meeting created:", response.data);
+      setOpenDialog(true);
+    } catch (error) {
+      console.error("Error creating meeting:", error);
+    }
   };
+const fetchMentee=useCallback( async ()=>{
+  if (!mentorId) {
+    console.error('User ID is undefined');
+    return;
+  }
+  const response = await AxiosInstance.get(`/meet/${mentorId}`);
+  setMentees(response.data);
+},[mentorId]) 
+ 
+
+  useEffect(()=>{
+    fetchMentee();
+  },[mentorId])
+
+  const handleAccept = async (e) => {
+    e.preventDefault();
+    try {
+      setOpenDialog(true);
+      const menteeId = e.target.getAttribute("data-key");
+      setMenteeId(menteeId);
+      
+      const obj = {
+        mentorId,
+          summary,
+          description,
+          startDate: new Date(startDate).toISOString(),
+          endDate: new Date(endDate).toISOString(),
+          attendees: [{ email: attendeeEmail }],
+          menteeId,
+          code:code
+      };
+      setData(obj);
+
+      
+     
+        await createMeeting(obj);
+        setOpenDialog(false);
+    } catch (error) {
+      console.error("Error during meeting creation:", error);
+    }
+  };
+
 
   return (
     <div className="flex justify-center p-12 w-full h-[100vh]">
@@ -152,7 +213,7 @@ export default function Page() {
                   </TableHeader>
                   <TableBody>
                     {mentees.map((mentee) => (
-                      <TableRow key={mentee.email}>
+                      <TableRow key={mentee._id}>
                         <TableCell>{mentee.name}</TableCell>
                         <TableCell>{mentee.email}</TableCell>
                         <TableCell>
@@ -194,13 +255,13 @@ export default function Page() {
 
                         </TableCell>
                         <TableCell>
-                          {new Date(mentee.startTime).toLocaleString()}
+                          {new Date(mentee.start).toLocaleString()}
                         </TableCell>
                         <TableCell>
-                          {new Date(mentee.endTime).toLocaleString()}
+                          {new Date(mentee.end).toLocaleString()}
                         </TableCell>
                         <TableCell>
-                        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                        <Dialog key={mentee?._id} open={openDialog} onOpenChange={setOpenDialog}>
         <DialogTrigger>
           <Button className="mr-4 bg-green-400">Accept</Button>
         </DialogTrigger>
@@ -212,7 +273,7 @@ export default function Page() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="p-4 space-y-4">
+          <form className="p-4 space-y-4" onSubmit={handleAccept} data-key={mentee._id}>
             <div>
               <label htmlFor="summary" className="block font-bold">Summary:</label>
               <Input
@@ -266,38 +327,12 @@ export default function Page() {
               />
             </div>
             <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-            <Button 
+            <Button data-key={mentee?._id} type="submit"
             className="ml-4 bg-green-400 " >
             Confirm
           </Button>
-          </div>
+          </form>
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-          <Button 
-            className="bg-green-400"
-            onClick={() => {
-              
-              console.log({
-                summary,
-                description,
-                startDate,
-                endDate,
-                attendees: [
-                  {
-                    email: attendeeEmail,
-                    responseStatus: responseStatus,
-                  },
-                ],
-                // requestId: uuidv4(), 
-                conferenceSolutionKey: "hangoutsMeet",
-              });
-              setOpenDialog(false); 
-            }}
-          >
-            Confirm
-          </Button>
-        </DialogActions> */}
       </Dialog>
 
                           <Button variant="destructive">Reject</Button>
@@ -333,17 +368,17 @@ export default function Page() {
                 </TableHeader>
                 <TableBody>
                   {mentees.map((mentee) => (
-                    <TableRow key={mentee.email}>
-                      <TableCell>{mentee.name}</TableCell>
-                      <TableCell>{mentee.email}</TableCell>
+                    <TableRow key={mentee._id}>
+                      <TableCell>{mentee.menteeId?.username}</TableCell>
+                      <TableCell>{mentee.menteeId?.email}</TableCell>
                       <TableCell>
                         <a
-                          href={mentee.googleMeetLink}
+                          href={mentee.meetLink}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-500 underline"
                         >
-                          {mentee.googleMeetLink}
+                          {mentee.meetLink}
                         </a>
                       </TableCell>
                       <TableCell>
@@ -358,13 +393,13 @@ export default function Page() {
     </DialogHeader>
     <div className="space-y-4">
       <div>
-        <strong>User Name:</strong> {selectedMentee?.name}
+        <strong>User Name:</strong> {mentee.menteeId?.username}
       </div>
       <div>
-        <strong>Email:</strong> {selectedMentee?.email}
+        <strong>Email:</strong> {mentee.menteeId?.email}
       </div>
       <div>
-        <strong>Experience:</strong> {selectedMentee?.experience || "N/A"}
+        <strong>Experience:</strong> {mentee.menteeId?.experience || "N/A"}
       </div>
       <div>
         <strong>Description:</strong> {selectedMentee?.description || "N/A"}
@@ -377,10 +412,6 @@ export default function Page() {
       </div>
     </div>
   </DialogContent>
-  {/* <DialogActions> */}
-    {/* <Button onClick={() => setOpenDialog(false)}>Close</Button> */}
-    {/* <Button onClick={() => {}}>Confirm</Button> */}
-  {/* </DialogActions> */}
 </Dialog>
 
                       </TableCell>

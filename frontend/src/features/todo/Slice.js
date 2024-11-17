@@ -9,6 +9,9 @@ const initialState = {
   loading: true,
 };
 
+// const msgState={
+//   message:null
+// }
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -26,6 +29,7 @@ const authSlice = createSlice({
     },
   },
 });
+
 
 export const loadUser = () => (dispatch) => {
   const unsubscribe = onAuthStateChanged(auth, (user) => {

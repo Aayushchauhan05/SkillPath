@@ -14,13 +14,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import AxiosInstance from "@/lib/AxiosInstance"
 const LoginForm = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
   const userId = useSelector((state) => state.currentuser?.uid);
-  const { addToken } = useAuth();
+  const { addToken,addCode } = useAuth();
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -43,7 +44,19 @@ const LoginForm = () => {
   
       const userData = querySnapshot.docs[0].data();
       Cookies.set("role", userData.role); 
-  
+      // if(userData.role=="mentor"){
+      //   console.log("njdjdnjdndd>>>>>>>")
+      //   const authUrl = await AxiosInstance.get('auth/url'); 
+      //   window.open(authUrl.data, '_self'); 
+
+      //   console.log("<<<<<<<<<njdjdnjdndd>>>>>>>")
+      //   const urlParams = new URLSearchParams(window.location.search);
+      //   const code = urlParams.get('code');
+      //   if (code) {
+      //     console.log("<<<<<<njdjd><><><><>njdndd>>>>>>>")
+      //       addCode(code); 
+      //   }
+      // }
     
   };
 
@@ -61,6 +74,9 @@ const LoginForm = () => {
         await getUser(user.user);
         console.log(user.user)
         Cookies.set("user", user.user.uid);
+        
+       
+
         router.push("/");
       }
     } catch (error) {
@@ -78,6 +94,8 @@ const LoginForm = () => {
         Cookies.set("token", user._tokenResponse.idToken, { expires: 7 });
         await getUser(user.user);
         Cookies.set("user", user.user.uid);
+        
+
         router.push("/");
       }
     } catch (error) {

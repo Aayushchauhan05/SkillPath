@@ -29,6 +29,7 @@ export default function Page() {
     }, [dispatch]);
     const userId=  useSelector(state=>state.auth.currentuser?.uid);
   const [bid, setBid] = useState({
+    mentorId:"",
     listingId:"",
     menteeId:"",
     name: "",
@@ -58,8 +59,16 @@ export default function Page() {
     setBid((prevBid) => ({ ...prevBid, [id]: value }));
   };
 
-  const handleBidSubmit = () => {
-    // Submit bid logic here
+  const handleBidSubmit = async () => {
+    try{
+const response = await AxiosInstance.post("/bid/bid/createbid",{
+...bid,mentorId:data.mentorId
+});
+console.log(response.data);
+    }
+    catch(e){
+console.log(e);
+    }
     console.log("Bid submitted", bid);
   };
 

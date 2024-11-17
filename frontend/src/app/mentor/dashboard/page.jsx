@@ -2,6 +2,14 @@
 import Image from "next/image"
 import Link from "next/link"
 import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { TrendingUp } from "lucide-react"
+import {
   BaggageClaimIcon,
   ChevronLeft,
   ChevronRight,
@@ -77,7 +85,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { TooltipProvider } from "@/components/ui/tooltip"; 
+import { useSearchParams } from "next/navigation";
 import { useState,useEffect,useCallback } from "react"
 import AxiosInstance from "@/lib/AxiosInstance"
 import { useSelector,useDispatch } from "react-redux"
@@ -85,12 +93,19 @@ import { loadUser } from "@/features/todo/Slice";
 import EventDialog from "@/app/component/Session"
 import SideBar from "@/app/component/MentorSideBar"
 import CourseForm from "@/app/component/CourseForm"
+import { FaGoogle } from "react-icons/fa"
+import { useAuth } from "@/context/context";
 export const description =
   "An orders dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. The main area has a list of recent orders with a filter and export button. The main area also has a detailed view of a single order with order details, shipping information, billing information, customer information, and payment information."
 
 export default function Page() {
   const [listing,setListing]=useState([]);
+  // const dispatch= useDispatch()
   const dispatch= useDispatch()
+  const { addToken,addCode } = useAuth();
+
+ 
+  
 useEffect(() => {
     const unsubscribe = dispatch(loadUser());
     return () => unsubscribe(); 
@@ -112,6 +127,56 @@ useEffect(() => {
   useEffect(()=>{
 fetchData()
   },[fetchData,userId])
+  const chartData = [
+    { month: "January", desktop: 186 },
+    { month: "February", desktop: 305 },
+    { month: "March", desktop: 237 },
+    { month: "April", desktop: 73 },
+    { month: "May", desktop: 209 },
+    { month: "June", desktop: 214 },
+  ]
+  const chartConfig = {
+    desktop: {
+      label: "Desktop",
+      color: "hsl(var(--chart-1))",
+    }}
+    const handleAuth = async () => {
+      try {
+        
+       
+    console.log("Fetching authorization URL...");
+    const response = await AxiosInstance.get("auth/url");
+
+   
+    const authUrl = response.data.authUrl;
+    if (!window.location.search) {
+      console.log("Redirecting to:", authUrl);
+      window.location.href = authUrl;
+      return; 
+    }
+
+   
+    const searchParams = new URLSearchParams(window.location.search);
+    const authCode = searchParams.get("code");
+
+    if (!authCode) {
+      throw new Error("Authorization code not found in the query parameters.");
+    }
+    console.log("Authorization code received:", authCode);
+
+    
+    const oAuthResponse = await AxiosInstance.get(`/oauth2callback?code=${authCode}`);
+    const tokens = oAuthResponse.data.tokens;
+
+   
+    localStorage.setItem("oAuthToken", JSON.stringify(tokens));
+    console.log("OAuth tokens stored:", tokens);
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } catch (error) {
+    console.error("Error during OAuth process:", error.message);
+  }
+    };
   return (
     <div className="flex flex-col w-full min-h-screen bg-muted/40">
        <SideBar/>
@@ -240,6 +305,10 @@ fetchData()
                 <CardFooter>
                   <EventDialog/>
                   <CourseForm/>
+                  <Button onClick={handleAuth}>
+                  set-up Auth for meet
+                  <FaGoogle/>
+                  </Button>
                 </CardFooter>
               </Card>
               <Card x-chunk="dashboard-05-chunk-1">
@@ -404,13 +473,14 @@ fetchData()
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          Trending up by 5.2% this month <TrendingUp className="w-4 h-4" />
         </div>
         <div className="leading-none text-muted-foreground">
           Showing total visitors for the last 6 months
         </div>
       </CardFooter>
     </Card>
+    
         </main>
       </div>
     </div>

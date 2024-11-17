@@ -3,10 +3,7 @@ import Cookies from "js-cookie";
 import { db } from "./utils/firebase";
 
 export async function middleware(req) {
-    const token = req.cookies.get("token");
-    console.log("Token testing:", token);
-
-   
+    const token = req.cookies.get("token");   
     if (!token && (req.nextUrl.pathname.startsWith("/login") || req.nextUrl.pathname.startsWith("/registration"))) {
         return NextResponse.next();
     }
@@ -18,12 +15,17 @@ export async function middleware(req) {
 
     try {
         
+        
         const userDoc = req.cookies.get("role");
 
         const userData = userDoc.value;;
         const { pathname } = req.nextUrl;
-
-     
+        // if(token && pathname.startsWith("/") && userData === "mentor"){
+        //     return NextResponse.redirect(new URL("/mentor/dashboard", req.url));
+        // }
+        // if(token && pathname.startsWith("/") && userData === "mentee"){
+        //     return NextResponse.redirect(new URL("/mentee/dashboard", req.url));
+        // }
         if (userData=== "mentee" && pathname.startsWith("/mentee")) {
           
             return NextResponse.next();

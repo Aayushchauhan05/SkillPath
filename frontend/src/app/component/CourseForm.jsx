@@ -60,7 +60,7 @@ export default function CourseDialog() {
     e.preventDefault();
     console.log({ courseTitle, courseDescription, units });
     alert("Course submitted successfully!");
-    setOpen(false); // Close the dialog after submission
+    setOpen(false); 
   };
 
   return (
