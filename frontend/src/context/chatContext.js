@@ -23,7 +23,7 @@ export const ChatProvider = ({ children }) => {
     };
 
     if (token && userId && userId !== "undefined" && !socketRef.current) {
-      socketRef.current = io("https://skill-path-backend.vercel.app/", {
+      socketRef.current = io(`${process.env.NEXT_PUBLIC_BASE_URL}`, {
         query: { userId },
         reconnection: true,
         reconnectionAttempts: 5,
