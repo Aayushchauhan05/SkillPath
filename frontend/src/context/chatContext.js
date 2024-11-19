@@ -23,7 +23,7 @@ export const ChatProvider = ({ children }) => {
     };
 
     if (token && userId && userId !== "undefined" && !socketRef.current) {
-      socketRef.current = io("http://127.0.0.1:8080/", {
+      socketRef.current = io("https://skill-path-backend.vercel.app/", {
         query: { userId },
         reconnection: true,
         reconnectionAttempts: 5,
