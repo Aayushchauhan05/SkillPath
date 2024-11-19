@@ -14,17 +14,10 @@ export const ChatProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const cleanup = () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-        setIsConnected(false);
-      }
-    };
-
     if (token && userId && userId !== "undefined" && !socketRef.current) {
       socketRef.current = io(`${process.env.NEXT_PUBLIC_BASE_URL}`, {
         query: { userId },
+        transports: ["websocket"],
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
@@ -46,22 +39,28 @@ export const ChatProvider = ({ children }) => {
       });
     }
 
+    const cleanup = () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+        setIsConnected(false);
+      }
+    };
+
     return cleanup;
   }, [token, userId]);
 
-  
   return (
     <chatContext.Provider 
       value={{ 
         socket: socketRef.current,
-        isConnected 
+        isConnected,
       }}
     >
       {children}
     </chatContext.Provider>
   );
 };
-
 
 export const useChat = () => {
   const context = useContext(chatContext);
