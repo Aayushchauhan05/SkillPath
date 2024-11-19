@@ -26,6 +26,7 @@ import {
   } from "@/components/ui/tooltip"
   import { TooltipProvider } from "@/components/ui/tooltip"; 
   import Link from "next/link";
+import { ChatBubbleIcon } from "@radix-ui/react-icons";
 
 
   
@@ -79,6 +80,18 @@ import {
                 </Link>
               </TooltipTrigger> 
                <TooltipContent side="right">Course</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/mentee/dashboard/chat"
+                  className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 text-muted-foreground hover:text-foreground md:h-8 md:w-8"
+                >
+                  <ChatBubbleIcon className="w-5 h-5" />
+                  <span className="sr-only">Chat</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Chat</TooltipContent>
             </Tooltip>
           </nav>
           

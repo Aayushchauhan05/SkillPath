@@ -5,19 +5,28 @@ import { useDispatch } from "react-redux";
 import { useChat } from "./chatContext";
 import { addMessage } from "@/features/todo/chatSlice";
 
+const NEW_MESSAGE_EVENT = "newmessage";
+
 function useSocketMsg() {
   const dispatch = useDispatch();
   const { socket } = useChat();
 
   useEffect(() => {
+    if (!socket) {
+      console.error("Socket is not initialized.");
+      return;
+    }
+
     const handleNewMessage = (newMessage) => {
+      console.log("Received new message:", newMessage);
       dispatch(addMessage(newMessage));
     };
 
-    socket.on("newmessage", handleNewMessage);
+    socket.on(NEW_MESSAGE_EVENT, handleNewMessage);
 
     return () => {
-      socket.off("newmessage", handleNewMessage);
+      console.log("Removing socket listeners for:", NEW_MESSAGE_EVENT);
+      socket.off(NEW_MESSAGE_EVENT, handleNewMessage);
     };
   }, [socket, dispatch]);
 }
