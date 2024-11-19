@@ -52,30 +52,31 @@ import AxiosInstance from "@/lib/AxiosInstance"
 import { loadUser } from "@/features/todo/Slice";
 import { useAuth } from "@/context/context";
 import { useSelector,useDispatch } from "react-redux"
+import { useParams } from "next/navigation";
 export default function Page() {
     const [summary, setSummary] = useState(""); 
     const [description, setDescription] = useState(""); 
     const [startDate, setStartDate] = useState(""); 
     const [endDate, setEndDate] = useState(""); 
     const [attendeeEmail, setAttendeeEmail] = useState(""); 
-    const [responseStatus, setResponseStatus] = useState("needsAction");
+    // const [listingId, setlistingId] = useState("");
     const[menteeId,setMenteeId]=useState()
     const[data,setData]=useState()
     const{code, getCode}=useAuth()
    const [mentees,setMentees]=useState([])
-  const sessionDetails = {
-    _id: "671cf6f16db2d73481b134bd",
-    mentorId: "wVlnTbBZE9Q82FaztTVr6cUUkhQ2",
-    domain: "Machine learning",
-    topic: "Introduction to basic Machine learning",
-    description: "This session covers the basics of AI and Machine Learning, including definitions, applications, and a hands-on project.",
-    sessionPrice: 636,
-    sessionStatus: "active",
-    start: "2024-10-27T14:00:24.475Z",
-    end: "2024-10-28T14:00:24.475Z",
-  };
+   const {listingId}=useParams()
+   const [sessionDetails,setsessionDetails]=useState({
+    _id: "",
+    mentorId: "",
+    domain: "",
+    topic: "",
+    description: "",
+    sessionPrice:0,
+    sessionStatus: "",
+    start: "",
+    end: "",
+  })
 
-  
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedMentee, setSelectedMentee] = useState({
     mentorId:"",
@@ -86,6 +87,7 @@ export default function Page() {
     attendees: [{ email: attendeeEmail }] ,
     menteeId:""
   });
+  const [bids,setBids]=useState([]);
   const dispatch= useDispatch()
   useEffect(()=>{
     getCode();
@@ -103,12 +105,21 @@ useEffect(() => {
         `meet/createmeet?mentorId=${mentorId}&menteeId=${data.menteeId}&code=${data.code}&tokens=${tokens}`,
         { ...data }
       );
-      console.log("Meeting created:", response.data);
       setOpenDialog(true);
+      return response.data._id
+      
     } catch (error) {
       console.error("Error creating meeting:", error);
     }
   };
+  const fetchListingById= useCallback(async ()=>{
+    const response= await AxiosInstance.get(`/listing/get_listing/${listingId}`)
+    setsessionDetails(response.data);
+  },[listingId])
+  const fetchBid= useCallback(async ()=>{
+const response= await AxiosInstance.get(`/bid/bids/listing/${listingId}`)
+setBids(response.data);
+  },[listingId])
 const fetchMentee=useCallback( async ()=>{
   if (!mentorId) {
     console.error('User ID is undefined');
@@ -121,15 +132,19 @@ const fetchMentee=useCallback( async ()=>{
 
   useEffect(()=>{
     fetchMentee();
+    fetchBid()
   },[mentorId])
+  useEffect(()=>{
+    fetchBid()
+    fetchListingById()
+  },[listingId])
 
   const handleAccept = async (e) => {
     e.preventDefault();
     try {
       setOpenDialog(true);
-      const menteeId = e.target.getAttribute("data-key");
+      const menteeId = e.target.getAttribute("data-menteeid");
       setMenteeId(menteeId);
-      
       const obj = {
         mentorId,
           summary,
@@ -141,16 +156,30 @@ const fetchMentee=useCallback( async ()=>{
           code:code
       };
       setData(obj);
-
-      
-     
-        await createMeeting(obj);
+       const meetId= await createMeeting(obj);
+        const bidId = e.target.getAttribute("data-key");
+        const conversation= await AxiosInstance.put(`/bid/updatebid/${bidId}`,{
+          status:"accepted",
+          mentorId,
+          menteeId,
+          meetId:meetId
+        })
         setOpenDialog(false);
     } catch (error) {
       console.error("Error during meeting creation:", error);
     }
   };
-
+const handleReject= async (e)=>{
+try {
+  const bidId = e.target.getAttribute("data-key");
+  const status= await AxiosInstance.put(`/bid/updatebid/${bidId}`,{
+    status:"rejected",
+    
+  })
+} catch (error) {
+  console.log(error)
+}
+}
 
   return (
     <div className="flex justify-center p-12 w-full h-[100vh]">
@@ -192,7 +221,7 @@ const fetchMentee=useCallback( async ()=>{
               </div>
             </CardContent>
             <CardFooter>
-              <Button>Save changes</Button>
+             
             </CardFooter>
           </Card>
           {/* Accordion for Mentees */}
@@ -212,10 +241,10 @@ const fetchMentee=useCallback( async ()=>{
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {mentees.map((mentee) => (
-                      <TableRow key={mentee._id}>
-                        <TableCell>{mentee.name}</TableCell>
-                        <TableCell>{mentee.email}</TableCell>
+                    {bids.map((mentee) => (
+                      <TableRow key={mentee._id}  >
+                        <TableCell>{mentee.menteeId?.username}</TableCell>
+                        <TableCell>{mentee.menteeId?.email}</TableCell>
                         <TableCell>
                         <Dialog>
   <DialogTrigger><Eye className="w-5 h-5 text-blue-500 cursor-pointer" /></DialogTrigger>
@@ -228,22 +257,25 @@ const fetchMentee=useCallback( async ()=>{
     </DialogHeader>
     <div className="space-y-4">
       <div>
-        <strong>User Name:</strong> {selectedMentee?.name}
+        <strong>User Name:</strong> {mentee.menteeId?.username}
       </div>
       <div>
-        <strong>Email:</strong> {selectedMentee?.email}
+        <strong>Email:</strong> {mentee.menteeId?.email}
       </div>
       <div>
-        <strong>Experience:</strong> {selectedMentee?.experience || "N/A"}
+        <strong>Experience:</strong> {mentee.menteeId?.experience || "N/A"}
       </div>
       <div>
-        <strong>Description:</strong> {selectedMentee?.description || "N/A"}
+        <strong>Description:</strong> {mentee?.description || "N/A"}
       </div>
       <div>
-        <strong>Payment Amount:</strong> ${selectedMentee?.paymentAmount || "N/A"}
+        <strong>Payment Amount:</strong> ${mentee?.paymentAmount || "N/A"}
       </div>
       <div>
-        <strong>Date and Time:</strong> {new Date(selectedMentee?.dateTime).toLocaleString() || "N/A"}
+        <strong>Start Date and Time:</strong> {new Date(mentee.listingId?.start).toLocaleString() || "N/A"}
+      </div>
+      <div>
+        <strong>End Date and Time:</strong> {new Date(mentee.listingId?.end).toLocaleString() || "N/A"}
       </div>
     </div>
   </DialogContent>
@@ -265,7 +297,7 @@ const fetchMentee=useCallback( async ()=>{
         <DialogTrigger>
           <Button className="mr-4 bg-green-400">Accept</Button>
         </DialogTrigger>
-        <DialogContent className="max-h-[80vh] overflow-y-auto"> {/* Added scrollable functionality */}
+        <DialogContent className="max-h-[80vh] overflow-y-auto"> 
           <DialogHeader>
             <DialogTitle>Meeting Details</DialogTitle>
             <DialogDescription>
@@ -273,9 +305,17 @@ const fetchMentee=useCallback( async ()=>{
             </DialogDescription>
           </DialogHeader>
 
-          <form className="p-4 space-y-4" onSubmit={handleAccept} data-key={mentee._id}>
+          <form className="p-4 space-y-4" onSubmit={handleAccept} data-key={mentee._id} data-menteeid={mentee.menteeId?._id}
+>
             <div>
               <label htmlFor="summary" className="block font-bold">Summary:</label>
+              <Input
+                type="hidden"
+                id="menteeId"
+                value={mentee.menteeId?._id}
+                required
+              />
+               {`${mentee.menteeId?._id}`}
               <Input
                 type="text"
                 id="summary"
@@ -335,7 +375,7 @@ const fetchMentee=useCallback( async ()=>{
         </DialogContent>
       </Dialog>
 
-                          <Button variant="destructive">Reject</Button>
+                          <Button variant="destructive" onClick={handleReject} data-key={mentee._id}>Reject</Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -428,7 +468,7 @@ const fetchMentee=useCallback( async ()=>{
               </Table>
             </CardContent>
             <CardFooter>
-              <Button>Save mentee changes</Button>
+              
             </CardFooter>
           </Card>
         </TabsContent>

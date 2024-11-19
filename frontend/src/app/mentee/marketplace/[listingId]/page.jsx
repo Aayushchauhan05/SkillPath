@@ -61,9 +61,20 @@ export default function Page() {
 
   const handleBidSubmit = async () => {
     try{
-const response = await AxiosInstance.post("/bid/bid/createbid",{
-...bid,mentorId:data.mentorId
+const response = await AxiosInstance.post("/bid/createbid",{
+...bid,mentorId:data.mentorId,menteeId:userId,listingId:listingId
 });
+setBid({
+  mentorId:"",
+  listingId:"",
+  menteeId:"",
+  name: "",
+  phone: "",
+  email: "",
+  topic: "",
+  description: "",
+  payingAmount: ""
+})
 console.log(response.data);
     }
     catch(e){

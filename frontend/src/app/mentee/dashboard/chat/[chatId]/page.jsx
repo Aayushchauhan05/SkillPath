@@ -1,24 +1,41 @@
-"use client"
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "next/navigation";
 import { addMessage, clearMessages } from "@/features/todo/chatSlice";
 import useSocketMsg from "@/context/useSocketMsg";
+import AxiosInstance from "@/lib/AxiosInstance";
 
 export default function ChatDashboard() {
   const [chatToggle, setChatToggle] = useState(false);
   const dispatch = useDispatch();
   const chats = useSelector((state) => state.chat.messages);
   const userId = useSelector((state) => state.auth.currentuser?.uid);
+  const [conversation, setConversation] = useState();
   const { chatId } = useParams();
   const ref = useRef();
   const messagesEndRef = useRef(null);
 
   useSocketMsg();
 
-  const handleChat = () => {
+  const handleChat = (e) => {
+    const receiverId = e.getAtrributes("data-key");
+    window.location.href = receiverId;
     setChatToggle((prev) => !prev);
   };
+  const handleUserConverSation = useCallback(async () => {
+    if (!userId) {
+      return;
+    }
+    try {
+      const response = await AxiosInstance.get(
+        `/conversation/conversations/user/${userId}`
+      );
+      setConversation(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [userId]);
 
   const createChat = async (e) => {
     e.preventDefault();
@@ -47,12 +64,17 @@ export default function ChatDashboard() {
       console.error(e);
     }
   };
+  useEffect(() => {
+    handleUserConverSation();
+  }, [userId]);
 
   useEffect(() => {
     if (chatToggle) {
       (async () => {
         try {
-          const response = await AxiosInstance.get(`chat/chats/${userId}/${chatId}`);
+          const response = await AxiosInstance.get(
+            `chat/chats/${userId}/${chatId}`
+          );
           response.data.forEach((chat) => dispatch(addMessage(chat.message)));
         } catch (error) {
           console.error(error);
@@ -72,30 +94,36 @@ export default function ChatDashboard() {
         <div className="flex flex-col">
           <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4"></header>
           <main className="grid flex-1 gap-4 p-4 overflow-auto md:grid-cols-2 lg:grid-cols-3">
-            <div
-              className="relative flex-col items-start hidden gap-8 border-2 md:flex border-s-indigo-500"
-            >
+            <div className="relative flex-col items-start hidden gap-8 border-2 md:flex border-s-indigo-500">
               <h1 className="text-3xl">Chat</h1>
-              <div
-                className="flex items-center justify-around w-full h-24 border-2 border-b-indigo-500"
-                onClick={handleChat}
-              >
-                <div className="flex-col">
-                  <h5>Aayush Chauhan</h5>
-                  <p className="text-green-500">online</p>
+              {conversation?.conversations.map((elem) => (
+                <div
+                  className="flex items-center justify-around w-full h-24 border-2 border-b-indigo-500"
+                  onClick={handleChat}
+                  data-key={elem?._id}
+                  key={elem._id}
+                >
+                  <div className="flex-col">
+                    <h5>{elem?.username}</h5>
+                    <p className="text-green-500">{elem?.email}</p>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
             {chatToggle ? (
               <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
                 {chats.map((elem, index) => (
                   <div
                     key={index}
-                    className={`chat chat-${elem.sender === userId ? "end" : "start"}`}
+                    className={`chat chat-${
+                      elem.sender === userId ? "end" : "start"
+                    }`}
                   >
                     <div
                       className={`chat-bubble ${
-                        elem.sender === userId ? "chat-bubble-success" : "chat-bubble-info"
+                        elem.sender === userId
+                          ? "chat-bubble-success"
+                          : "chat-bubble-info"
                       }`}
                     >
                       {elem.text}

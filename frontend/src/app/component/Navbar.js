@@ -56,9 +56,9 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* Navbar Center (Optional Links for Large Screens) */}
+      
       <div className="hidden navbar-center lg:flex">
-        <ul className="menu menu-horizontal space-x-4">
+        <ul className="space-x-4 menu menu-horizontal">
           <li>
             <Link href={"/"}>Home</Link>
           </li>
@@ -86,8 +86,8 @@ export default function Navbar() {
         </ul>
       </div>
 
-      {/* Navbar End (Login/Logout/Register Buttons) */}
-      <div className="navbar-end space-x-4">
+     
+      <div className="space-x-4 navbar-end">
         {token ? (
           <>
             <Link href={"/logout"} className="btn btn-outline btn-error">

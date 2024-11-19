@@ -1,15 +1,28 @@
-"use client";
-import Image from "next/image";
-import Link from "next/link";
+"use client"
+import Image from "next/image"
+import Link from "next/link"
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import { TrendingUp } from "lucide-react";
+} from "@/components/ui/chart"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { TrendingUp } from "lucide-react"
+import {
+  BaggageClaimIcon,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  CreditCard,
   File,
   Home,
   LineChart,
@@ -23,7 +36,10 @@ import {
   ShoppingCart,
   Truck,
   Users2,
-} from "lucide-react";
+  Eye
+} from "lucide-react"
+
+import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -31,8 +47,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/breadcrumb"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -40,7 +56,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -49,18 +65,35 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+} from "@/components/ui/pagination"
+import { Progress } from "@/components/ui/progress"
+import { Separator } from "@/components/ui/separator"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/components/ui/table"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
@@ -99,6 +132,7 @@ function Dashboard() {
       return;
     }
     try {
+
       const response = await AxiosInstance.get(`/bid/bids/mentee/${userId}`);
       setSession(response.data);
     } catch (e) {
@@ -111,7 +145,7 @@ function Dashboard() {
   return (
     <div className="flex flex-col w-full min-h-screen bg-muted/40">
       <MenteeSideBar />
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Bar Chart</CardTitle>
           <CardDescription>January - June 2024</CardDescription>
@@ -143,7 +177,7 @@ function Dashboard() {
             Showing total visitors for the last 6 months
           </div>
         </CardFooter>
-      </Card>
+      </Card> */}
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <header className="sticky top-0 z-30 flex items-center gap-4 px-4 border-b h-14 bg-background sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Sheet>
@@ -363,63 +397,89 @@ function Dashboard() {
                           </TableHead>
                           <TableHead className="text-right">Amount</TableHead>
                           <TableHead className="hidden md:table-cell">
-                            view
+                            View
                           </TableHead>
                         </TableRow>
                       </TableHeader>
+
                       <TableBody>
-                        {/* {session.map((elem,index)=>(<TableRow key={index} className="bg-accent">
-                          <TableCell>
-                            <div className="font-medium">{elem?.topic}</div>
-                            <div className="hidden text-sm text-muted-foreground md:inline">
-                              {elem.mentorId?.email}
-                            </div>
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell">
-                            {elem.domain}
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell">
-                            <Badge className="text-xs" variant="secondary">
-                              {elem?.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {elem.meetId?.start}
-                          </TableCell>
-                          <TableCell className="text-right">{` ₹ ${elem?. payingAmount}`}</TableCell>
-                          <TableCell className="hidden md:table-cell">
-                           <DialogTrigger><Eye className="w-5 h-5 text-blue-500 cursor-pointer" /></DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>User Details</DialogTitle>
-      <DialogDescription>
-        Review the details below.
-      </DialogDescription>
-    </DialogHeader>
-    <div className="space-y-4">
-      <div>
-        <strong>User Name:</strong> {mentee.menteeId?.username}
-      </div>
-      <div>
-        <strong>Email:</strong> {mentee.menteeId?.email}
-      </div>
-      <div>
-        <strong>Experience:</strong> {mentee.menteeId?.experience || "N/A"}
-      </div>
-      <div>
-        <strong>Description:</strong> {selectedMentee?.description || "N/A"}
-      </div>
-      <div>
-        <strong>Payment Amount:</strong> ${selectedMentee?.paymentAmount || "N/A"}
-      </div>
-      <div>
-        <strong>Date and Time:</strong> {new Date(selectedMentee?.dateTime).toLocaleString() || "N/A"}
-      </div>
-    </div>
-  </DialogContent>
-</Dialog>
-                          </TableCell>
-                        </TableRow>))} */}
+                        {session.map((elem) => (
+                          <TableRow key={elem.listingId} className="bg-accent">
+                            <TableCell>
+                              <div className="font-medium">{elem?.topic}</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                {elem.mentorId?.email}
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {elem.menteeId?.role}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge className="text-xs" variant="secondary">
+                                {elem?.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {elem.meetId?.start}
+                            </TableCell>
+                            <TableCell className="text-right">{`₹ ${elem?.payingAmount}`}</TableCell>
+                            <TableCell className="hidden md:table-cell">
+                            <Dialog>
+                               <DialogTrigger>
+                                <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
+                                 </DialogTrigger>
+                               <DialogContent>
+                                  <DialogHeader>
+                                     <DialogTitle>
+                                     User Details
+                                     </DialogTitle>
+                                  <DialogDescription>
+                                    Review the details below.
+                                      </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div>
+                                    <strong>User Name:</strong>
+                                    {elem.menteeId?.username}
+                                  </div>
+                                  <div>
+                                    <strong>Email:</strong>
+                                    {elem.menteeId?.email}
+                                  </div>
+                                  <div>
+                                    <strong>Experience:</strong>
+                                    {elem.menteeId?.experience || "N/A"}
+                                  </div>
+                                  <div>
+                                    <strong>Description:</strong>
+                                    {elem?.description || "N/A"}
+                                  </div>
+                                  <div>
+                                    <strong>Payment Amount:</strong> ₹
+                                    {elem?.paymentAmount || "N/A"}
+                                  </div>
+                                  <div>
+                                    <strong>MeetLink:</strong> 
+                                    {elem?.meetId?.meetLink || "N/A"}
+                                  </div>
+                                  <div>
+                                    <strong>Start Date and Time:</strong>
+                                    {new Date(
+                                      elem?.listingId?.start
+                                    ).toLocaleString() || "N/A"}
+                                  </div>
+                                  <div>
+                                    <strong>End Date and Time:</strong>
+                                    {new Date(
+                                      elem?.listingId?.end
+                                    ).toLocaleString() || "N/A"}
+                                  </div>
+                                </div>
+                                 </DialogContent>
+                              </Dialog>
+                            </TableCell>
+                          </TableRow>
+                        ))}
                       </TableBody>
                     </Table>
                   </CardContent>
