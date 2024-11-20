@@ -255,6 +255,7 @@ fetchData()
         <div className="w-full sm:w-auto">
           <CourseForm />
         </div>
+        <div className="w-full sm:w-auto">
         <Button 
           onClick={handleAuth}
           className="flex items-center w-full gap-2 sm:w-auto"
@@ -262,6 +263,8 @@ fetchData()
           set-up Auth for meet
           <FaGoogle className="w-4 h-4" />
         </Button>
+        </div>
+        
       </CardFooter>
     </Card>
               <Card x-chunk="dashboard-05-chunk-1">
