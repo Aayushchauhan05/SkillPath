@@ -17,7 +17,7 @@ export const ChatProvider = ({ children }) => {
     if (token && userId && userId !== "undefined" && !socketRef.current) {
       socketRef.current = io(`${process.env.NEXT_PUBLIC_BASE_URL}`, {
         query: { userId },
-        transports: ["websocket"],
+        transports: ["websocket", "polling"],
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
