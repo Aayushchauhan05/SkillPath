@@ -182,60 +182,6 @@ fetchData()
        <SideBar/>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <header className="sticky top-0 z-30 flex items-center gap-4 px-4 border-b h-14 bg-background sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button size="icon" variant="outline" className="sm:hidden">
-                <PanelLeft className="w-5 h-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="sm:max-w-xs">
-              <nav className="grid gap-6 text-lg font-medium">
-                <Link
-                  href="#"
-                  className="flex items-center justify-center w-10 h-10 gap-2 text-lg font-semibold rounded-full group shrink-0 bg-primary text-primary-foreground md:text-base"
-                >
-                  <Package2 className="w-5 h-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">Acme Inc</span>
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Home className="w-5 h-5" />
-                  Dashboard
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-foreground"
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  Orders
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Package className="w-5 h-5" />
-                  Appointment
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Users2 className="w-5 h-5" />
-                  Meets
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <LineChart className="w-5 h-5" />
-                  Settings
-                </Link>
-              </nav>
-            </SheetContent>
-          </Sheet>
           <Breadcrumb className="hidden md:flex">
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -285,32 +231,39 @@ fetchData()
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem><Link href={"/logout"}>Logout</Link></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
         <main className="grid items-start flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
           <div className="grid items-start gap-4 auto-rows-max md:gap-8 lg:col-span-2">
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-              <Card
-                className="sm:col-span-2" x-chunk="dashboard-05-chunk-0"
-              >
-                <CardHeader className="pb-3">
-                  <CardTitle>Your sesssions</CardTitle>
-                  <CardDescription className="max-w-lg leading-relaxed text-balance">
-                    Introducing Our Dynamic Orders Dashboard for Seamless
-                    Management and Insightful Analysis.
-                  </CardDescription>
-                </CardHeader>
-                <CardFooter>
-                  <EventDialog/>
-                  <CourseForm/>
-                  <Button onClick={handleAuth}>
-                  set-up Auth for meet
-                  <FaGoogle/>
-                  </Button>
-                </CardFooter>
-              </Card>
+            <Card className="w-full max-w-4xl p-4 mx-auto md:col-span-2">
+      <CardHeader className="space-y-4">
+        <CardTitle className="text-xl font-bold md:text-2xl">
+          Your sessions
+        </CardTitle>
+        <CardDescription className="max-w-lg text-sm leading-relaxed md:text-base">
+          Introducing Our Dynamic Orders Dashboard for Seamless
+          Management and Insightful Analysis.
+        </CardDescription>
+      </CardHeader>
+      <CardFooter className="flex flex-col items-center justify-start gap-4 pt-6 sm:flex-row">
+        <div className="w-full sm:w-auto">
+          <EventDialog />
+        </div>
+        <div className="w-full sm:w-auto">
+          <CourseForm />
+        </div>
+        <Button 
+          onClick={handleAuth}
+          className="flex items-center w-full gap-2 sm:w-auto"
+        >
+          set-up Auth for meet
+          <FaGoogle className="w-4 h-4" />
+        </Button>
+      </CardFooter>
+    </Card>
               <Card x-chunk="dashboard-05-chunk-1">
                 <CardHeader className="pb-2">
                   <CardDescription>Total revenue</CardDescription>
@@ -321,72 +274,16 @@ fetchData()
 </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {/* <div className="text-xs text-muted-foreground">
-                    +25% from last week
-                  </div> */}
+                
                 </CardContent>
                 <CardFooter>
                   <Progress value={25} aria-label="25% increase" />
                 </CardFooter>
               </Card>
-              {/* <Card x-chunk="dashboard-05-chunk-2">
-                <CardHeader className="pb-2">
-                  <CardDescription>This Month</CardDescription>
-                  <CardTitle className="text-4xl">$5,329</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-xs text-muted-foreground">
-                    +10% from last month
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Progress value={12} aria-label="12% increase" />
-                </CardFooter>
-              </Card> */}
+            
             </div>
             <Tabs defaultValue="week">
-              <div className="flex items-center">
-                <TabsList>
-                  <TabsTrigger value="week">Active</TabsTrigger>
-                  <TabsTrigger value="month">Completed</TabsTrigger>
-                  <TabsTrigger value="year">Decline</TabsTrigger>
-                </TabsList>
-                <div className="flex items-center gap-2 ml-auto">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1 text-sm h-7"
-                      >
-                        <ListFilter className="h-3.5 w-3.5" />
-                        <span className="sr-only sm:not-sr-only">Filter</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuCheckboxItem checked>
-                        Fulfilled
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem>
-                        Declined
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem>
-                        Refunded
-                      </DropdownMenuCheckboxItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="gap-1 text-sm h-7"
-                  >
-                    <File className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only">Export</span>
-                  </Button>
-                </div>
-              </div>
+              
               <TabsContent value="week">
                 <Card x-chunk="dashboard-05-chunk-3">
                   <CardHeader className="px-7">

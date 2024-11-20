@@ -14,14 +14,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import AxiosInstance from "@/lib/AxiosInstance"
+import AxiosInstance from "@/lib/AxiosInstance";
+
 const LoginForm = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
   const userId = useSelector((state) => state.currentuser?.uid);
-  const { addToken,addCode } = useAuth();
+  const { addToken, addCode } = useAuth();
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -33,35 +35,21 @@ const LoginForm = () => {
   };
 
   const getUser = async (user) => {
-    console.log(user.email)
-      const userCollection = collection(db, "user");
-      const userQuery = query(userCollection, where("email", "==", user.email));
-      const querySnapshot = await getDocs(userQuery);
-  
-      if (querySnapshot.empty) {
-        throw new Error("User not found");
-      }
-  
-      const userData = querySnapshot.docs[0].data();
-      Cookies.set("role", userData.role); 
-      // if(userData.role=="mentor"){
-      //   console.log("njdjdnjdndd>>>>>>>")
-      //   const authUrl = await AxiosInstance.get('auth/url'); 
-      //   window.open(authUrl.data, '_self'); 
+    const userCollection = collection(db, "user");
+    const userQuery = query(userCollection, where("email", "==", user.email));
+    const querySnapshot = await getDocs(userQuery);
 
-      //   console.log("<<<<<<<<<njdjdnjdndd>>>>>>>")
-      //   const urlParams = new URLSearchParams(window.location.search);
-      //   const code = urlParams.get('code');
-      //   if (code) {
-      //     console.log("<<<<<<njdjd><><><><>njdndd>>>>>>>")
-      //       addCode(code); 
-      //   }
-      // }
-    
+    if (querySnapshot.empty) {
+      throw new Error("User not found");
+    }
+
+    const userData = querySnapshot.docs[0].data();
+    Cookies.set("role", userData.role); 
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const user = await SignInWithFirebaseWithEmailAndPassword({
         email: loginData.email,
@@ -72,19 +60,18 @@ const LoginForm = () => {
         addToken(user._tokenResponse.idToken);
         Cookies.set("token", user._tokenResponse.idToken, { expires: 7 });
         await getUser(user.user);
-        console.log(user.user)
         Cookies.set("user", user.user.uid);
-        
-       
-
         router.push("/");
       }
     } catch (error) {
       console.error("Error during sign-in:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
+    setLoading(true);
     try {
       const user = await signInWithGoogle();
 
@@ -94,12 +81,12 @@ const LoginForm = () => {
         Cookies.set("token", user._tokenResponse.idToken, { expires: 7 });
         await getUser(user.user);
         Cookies.set("user", user.user.uid);
-        
-
         router.push("/");
       }
     } catch (error) {
       console.error("Error during Google login:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,7 +98,6 @@ const LoginForm = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email Input */}
             <div>
               <Label htmlFor="email" className="text-gray-300">Email</Label>
               <Input
@@ -126,7 +112,6 @@ const LoginForm = () => {
               />
             </div>
 
-            {/* Password Input */}
             <div>
               <Label htmlFor="password" className="text-gray-300">Password</Label>
               <Input
@@ -141,19 +126,22 @@ const LoginForm = () => {
               />
             </div>
 
-            {/* Login Button */}
-            <Button type="submit" className="w-full text-gray-100 bg-gray-600 hover:bg-gray-500">
-              Login
+            <Button 
+              type="submit" 
+              className="w-full text-gray-100 bg-gray-600 hover:bg-gray-500"
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Login"}
             </Button>
 
-            {/* Google Login Button */}
             <Button
               type="button"
               onClick={handleGoogleLogin}
               className="flex items-center justify-center w-full mt-2 space-x-2 text-gray-100 bg-red-500 hover:bg-red-600"
+              disabled={loading}
             >
               <FaGoogle />
-              <span>Login with Google</span>
+              <span>{loading ? "Loading..." : "Login with Google"}</span>
             </Button>
           </form>
         </CardContent>

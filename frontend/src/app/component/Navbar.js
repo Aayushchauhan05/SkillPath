@@ -2,14 +2,29 @@
 import { useAuth } from "@/context/context";
 import Cookies from "js-cookie";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
-  const role = Cookies.get("role");
-  const { token } = useAuth();
+  const router = useRouter();
+  const { token,removeCode,removeToken } = useAuth();
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const storedRole = Cookies.get("role");
+    setRole(storedRole);
+  }, []);
+
+  const handleLogout = () => {
+    Cookies.remove("role");
+    removeToken()
+    setRole(null);
+    removeCode();
+    router.push("/login");
+  };
 
   return (
     <div className="navbar bg-base-100">
-      {/* Navbar Start */}
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -35,20 +50,24 @@ export default function Navbar() {
             <li>
               <Link href={"/"}>Home</Link>
             </li>
-            <li>
-              {role === "mentor" ? (
-                <Link href={"/mentor/dashboard"}>Dashboard</Link>
-              ) : role === "mentee" ? (
-                <Link href={"/mentee/dashboard"}>Dashboard</Link>
-              ) : null}
-            </li>
-            <li>
-              {role === "mentor" ? (
-                <Link href={"/mentor/marketplace"}>Marketplace</Link>
-              ) : role === "mentee" ? (
-                <Link href={"/mentee/marketplace"}>Marketplace</Link>
-              ) : null}
-            </li>
+            {token && role && (
+              <>
+                <li>
+                  {role === "mentor" ? (
+                    <Link href={"/mentor/dashboard"}>Dashboard</Link>
+                  ) : (
+                    <Link href={"/mentee/dashboard"}>Dashboard</Link>
+                  )}
+                </li>
+                <li>
+                  {role === "mentor" ? (
+                    <Link href={"/mentor/marketplace"}>Marketplace</Link>
+                  ) : (
+                    <Link href={"/mentee/marketplace"}>Marketplace</Link>
+                  )}
+                </li>
+              </>
+            )}
           </ul>
         </div>
         <Link href={"/"} className="text-xl font-bold btn btn-ghost">
@@ -56,44 +75,44 @@ export default function Navbar() {
         </Link>
       </div>
 
-      
       <div className="hidden navbar-center lg:flex">
         <ul className="space-x-4 menu menu-horizontal">
           <li>
             <Link href={"/"}>Home</Link>
           </li>
-          {role === "mentor" ? (
-            <li>
-              <Link href={"/mentor/dashboard"}>Dashboard</Link>
-            </li>
-          ) : role === "mentee" ? (
-            <li>
-              <Link href={"/mentee/dashboard"}>Dashboard</Link>
-            </li>
-          ) : null}
-          {role === "mentor" ? (
-            <li>
-              <Link href={"/mentor/marketplace"}>Marketplace</Link>
-            </li>
-          ) : role === "mentee" ? (
-            <li>
-              <Link href={"/mentee/marketplace"}>Marketplace</Link>
-            </li>
-          ) : null}
+          {token && role && (
+            <>
+              {role === "mentor" ? (
+                <li>
+                  <Link href={"/mentor/dashboard"}>Dashboard</Link>
+                </li>
+              ) : (
+                <li>
+                  <Link href={"/mentee/dashboard"}>Dashboard</Link>
+                </li>
+              )}
+              {role === "mentor" ? (
+                <li>
+                  <Link href={"/mentor/marketplace"}>Marketplace</Link>
+                </li>
+              ) : (
+                <li>
+                  <Link href={"/mentee/marketplace"}>Marketplace</Link>
+                </li>
+              )}
+            </>
+          )}
           <li>
             <Link href={"/chat"}>Chat</Link>
           </li>
         </ul>
       </div>
 
-     
       <div className="space-x-4 navbar-end">
         {token ? (
-          <>
-            <Link href={"/logout"} className="btn btn-outline btn-error">
-              Logout
-            </Link>
-          </>
+          <button onClick={handleLogout} className="btn btn-outline btn-error">
+            Logout
+          </button>
         ) : (
           <>
             <Link href={"/login"} className="btn btn-primary">

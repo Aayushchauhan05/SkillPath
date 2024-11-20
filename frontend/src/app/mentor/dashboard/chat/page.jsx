@@ -6,10 +6,13 @@ import { addMessage } from "@/features/todo/chatSlice";
 import useSocketMsg from "@/context/useSocketMsg";
 import AxiosInstance from "@/lib/AxiosInstance";
 import { loadUser } from "@/features/todo/Slice";
-import SideBar from "@/app/component/MentorSideBar"
+import SideBar from "@/app/component/MentorSideBar";
+
 export default function ChatDashboard() {
   const [chatToggle, setChatToggle] = useState(false);
   const [chatId, setChatId] = useState("");
+  const [showChatList, setShowChatList] = useState(true);
+  const [loading, setLoading] = useState(false); // loading state
   const dispatch = useDispatch();
   const [conversation, setConversation] = useState([]);
   const ref = useRef(null);
@@ -17,47 +20,41 @@ export default function ChatDashboard() {
 
   useSocketMsg();
 
-
   useEffect(() => {
     const unsubscribe = dispatch(loadUser());
     return () => unsubscribe();
   }, [dispatch]);
 
-  
   const chats = useSelector((state) => state.chat.messages);
   const userId = useSelector((state) => state.auth.currentuser?.uid);
 
-  
   const handleChat = (e) => {
-    console.log("clicking>>>");
-
     const receiverId = e.currentTarget.getAttribute("data-key");
-
-    console.log("Receiver ID:", receiverId); 
-
     if (receiverId) {
-      setChatId(receiverId); 
-      setChatToggle(true); 
+      setChatId(receiverId);
+      setChatToggle(true);
+      setShowChatList(false);
     }
   };
 
- 
   const handleUserConversations = useCallback(async () => {
     if (!userId) {
       console.error("User ID is not available");
       return;
     }
 
+    setLoading(true); // Start loading
+
     try {
       const response = await AxiosInstance.get(`/conversation/conversations/user/${userId}`);
       setConversation(response.data || []);
-      console.log(response.data); // Log conversations data
     } catch (error) {
       console.error("Error fetching conversations:", error);
+    } finally {
+      setLoading(false); // Stop loading
     }
   }, [userId]);
 
-  // Create new chat message
   const createChat = async (e) => {
     e.preventDefault();
     if (!ref.current) return;
@@ -82,7 +79,6 @@ export default function ChatDashboard() {
     }
   };
 
- 
   useEffect(() => {
     if (!chatToggle || !userId || !chatId) return;
 
@@ -98,12 +94,10 @@ export default function ChatDashboard() {
     fetchChatMessages();
   }, [chatToggle, userId, chatId, dispatch]);
 
- 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats]);
 
-  
   useEffect(() => {
     if (!userId) {
       console.error("User ID is not available");
@@ -112,56 +106,59 @@ export default function ChatDashboard() {
     handleUserConversations();
   }, [userId, handleUserConversations]);
 
-  
-  useEffect(() => {
-    if (!userId || !chatId) return;
-    if (typeof window !== "undefined" && window.socket) {
-      console.log("Socket initialized and ready");
-    } else {
-      console.error("Socket is not initialized");
-    }
-  }, [userId, chatId]);
-
   return (
     <div className="flex w-full h-screen text-white bg-black">
-    <aside className="w-[4vw] max-w-[300px] bg-neutral-900 border-r border-neutral-800">
-       <SideBar/>
+      <aside className="w-[4vw] max-w-[300px] bg-neutral-900 border-r border-neutral-800">
+        <SideBar />
       </aside>
-      <aside className="w-full max-w-[300px] bg-neutral-900 border-r border-neutral-800">
+
+      <aside className={`w-full max-w-[300px] bg-neutral-900 border-r border-neutral-800 ${showChatList ? '' : 'hidden'} sm:block`}>
         <div className="flex items-center justify-between p-4 bg-neutral-800">
           <h1 className="text-xl font-bold">Chats</h1>
         </div>
         <div className="h-full overflow-y-auto">
-          {(conversation[0]?.conversations || []).map((elem) => (
-            <div
-              key={elem._id}
-              className="flex items-center justify-between p-4 transition-all border-b cursor-pointer border-neutral-800 hover:bg-neutral-700"
-              onClick={handleChat}
-              data-key={elem._id}
-            >
-              <div>
-                <h5 className="font-semibold text-white">{elem.username}</h5>
-                <p className="text-sm text-neutral-400">{elem.email}</p>
-              </div>
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="w-8 h-8 border-4 border-t-4 border-blue-500 rounded-full spinner-border animate-spin"></div>
             </div>
-          ))}
+          ) : (
+            (conversation[0]?.conversations || []).map((elem) => (
+              <div
+                key={elem._id}
+                className="flex items-center justify-between p-4 transition-all border-b cursor-pointer border-neutral-800 hover:bg-neutral-700"
+                onClick={handleChat}
+                data-key={elem._id}
+              >
+                <div>
+                  <h5 className="font-semibold text-white">{elem.username}</h5>
+                  <p className="text-sm text-neutral-400">{elem.email}</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </aside>
 
-      {/* Main Chat Area */}
       <div className="flex flex-col flex-1 bg-black">
         {chatToggle ? (
           <>
             <div className="flex items-center justify-between p-4 border-b bg-neutral-800 border-neutral-700">
+              <button
+                onClick={() => {
+                  setShowChatList(true);
+                  setChatToggle(false);
+                }}
+                className="text-white hover:text-gray-400"
+              >
+                &larr; Back
+              </button>
               <h2 className="text-xl font-bold">Chat</h2>
             </div>
             <div className="flex-1 p-4 overflow-y-auto">
               {chats.map((elem, index) => (
                 <div
                   key={index}
-                  className={`flex ${
-                    elem.sender === userId ? "justify-end" : "justify-start"
-                  } mb-3`}
+                  className={`flex ${elem.sender === userId ? "justify-end" : "justify-start"} mb-3`}
                 >
                   <div
                     className={`px-4 py-2 rounded-xl max-w-[75%] ${

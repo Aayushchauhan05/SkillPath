@@ -7,9 +7,12 @@ import useSocketMsg from "@/context/useSocketMsg";
 import AxiosInstance from "@/lib/AxiosInstance";
 import { loadUser } from "@/features/todo/Slice";
 import MenteeSideBar from "@/app/component/MenteeSideBar";
+
 export default function ChatDashboard() {
   const [chatToggle, setChatToggle] = useState(false);
   const [chatId, setChatId] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [conversation, setConversation] = useState([]);
   const ref = useRef(null);
@@ -17,47 +20,43 @@ export default function ChatDashboard() {
 
   useSocketMsg();
 
-
   useEffect(() => {
     const unsubscribe = dispatch(loadUser());
     return () => unsubscribe();
   }, [dispatch]);
 
-  
   const chats = useSelector((state) => state.chat.messages);
   const userId = useSelector((state) => state.auth.currentuser?.uid);
 
-  
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleChat = (e) => {
-    console.log("clicking>>>");
-
     const receiverId = e.currentTarget.getAttribute("data-key");
-
-    console.log("Receiver ID:", receiverId); 
-
     if (receiverId) {
-      setChatId(receiverId); 
-      setChatToggle(true); 
+      setChatId(receiverId);
+      setChatToggle(true);
     }
   };
 
- 
   const handleUserConversations = useCallback(async () => {
-    if (!userId) {
-      console.error("User ID is not available");
-      return;
-    }
+    if (!userId) return;
 
+    setLoading(true);
     try {
       const response = await AxiosInstance.get(`/conversation/conversations/user/${userId}`);
       setConversation(response.data || []);
-      console.log(response.data); // Log conversations data
     } catch (error) {
       console.error("Error fetching conversations:", error);
+    } finally {
+      setLoading(false);
     }
   }, [userId]);
 
-  // Create new chat message
   const createChat = async (e) => {
     e.preventDefault();
     if (!ref.current) return;
@@ -82,100 +81,99 @@ export default function ChatDashboard() {
     }
   };
 
- 
   useEffect(() => {
     if (!chatToggle || !userId || !chatId) return;
 
     const fetchChatMessages = async () => {
       try {
+        setLoading(true);
         const response = await AxiosInstance.get(`chat/chats/${userId}/${chatId}`);
         response.data.forEach((chat) => dispatch(addMessage(chat.message)));
       } catch (error) {
         console.error("Error fetching chat messages:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchChatMessages();
   }, [chatToggle, userId, chatId, dispatch]);
 
- 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats]);
 
-  
   useEffect(() => {
-    if (!userId) {
-      console.error("User ID is not available");
-      return;
-    }
+    if (!userId) return;
     handleUserConversations();
   }, [userId, handleUserConversations]);
 
-  
-  useEffect(() => {
-    if (!userId || !chatId) return;
-    if (typeof window !== "undefined" && window.socket) {
-      console.log("Socket initialized and ready");
-    } else {
-      console.error("Socket is not initialized");
-    }
-  }, [userId, chatId]);
-
   return (
     <div className="flex w-full h-screen text-white bg-black">
-    <aside className="w-[4vw] max-w-[300px] bg-neutral-900 border-r border-neutral-800">
-        <MenteeSideBar/>
+      <aside className="w-[4vw] max-w-[300px] bg-neutral-900 border-r border-neutral-800">
+        <MenteeSideBar />
       </aside>
-      <aside className="w-full max-w-[300px] bg-neutral-900 border-r border-neutral-800">
+
+      <aside className={`w-full max-w-[300px] bg-neutral-900 border-r border-neutral-800 ${isMobile && !chatToggle ? 'hidden' : 'block'}`}>
         <div className="flex items-center justify-between p-4 bg-neutral-800">
           <h1 className="text-xl font-bold">Chats</h1>
         </div>
         <div className="h-full overflow-y-auto">
-          {(conversation[0]?.conversations || []).map((elem) => (
-            <div
-              key={elem._id}
-              className="flex items-center justify-between p-4 transition-all border-b cursor-pointer border-neutral-800 hover:bg-neutral-700"
-              onClick={handleChat}
-              data-key={elem._id}
-            >
-              <div>
-                <h5 className="font-semibold text-white">{elem.username}</h5>
-                <p className="text-sm text-neutral-400">{elem.email}</p>
+          {loading ? (
+            <div className="flex items-center justify-center p-4 text-neutral-500">Loading conversations...</div>
+          ) : (
+            (conversation[0]?.conversations || []).map((elem) => (
+              <div
+                key={elem._id}
+                className="flex items-center justify-between p-4 transition-all border-b cursor-pointer border-neutral-800 hover:bg-neutral-700"
+                onClick={handleChat}
+                data-key={elem._id}
+              >
+                <div>
+                  <h5 className="font-semibold text-white">{elem.username}</h5>
+                  <p className="text-sm text-neutral-400">{elem.email}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </aside>
 
-      {/* Main Chat Area */}
       <div className="flex flex-col flex-1 bg-black">
         {chatToggle ? (
           <>
-            <div className="flex items-center justify-between p-4 border-b bg-neutral-800 border-neutral-700">
-              <h2 className="text-xl font-bold">Chat</h2>
-            </div>
-            <div className="flex-1 p-4 overflow-y-auto">
-              {chats.map((elem, index) => (
-                <div
-                  key={index}
-                  className={`flex ${
-                    elem.sender === userId ? "justify-end" : "justify-start"
-                  } mb-3`}
+            {isMobile && (
+              <div className="flex items-center justify-between p-4 bg-neutral-800 border-b border-neutral-700">
+                <button
+                  onClick={() => setChatToggle(false)}
+                  className="text-white text-xl"
                 >
+                  &#8592; Back
+                </button>
+                <h2 className="text-xl font-bold">Chat</h2>
+              </div>
+            )}
+
+            <div className="flex-1 p-4 overflow-y-auto">
+              {loading ? (
+                <div className="flex items-center justify-center text-neutral-500">Loading chat messages...</div>
+              ) : (
+                chats.map((elem, index) => (
                   <div
-                    className={`px-4 py-2 rounded-xl max-w-[75%] ${
-                      elem.sender === userId
-                        ? "bg-blue-800 text-white"
-                        : "bg-neutral-800 text-white"
-                    }`}
+                    key={index}
+                    className={`flex ${elem.sender === userId ? "justify-end" : "justify-start"} mb-3`}
                   >
-                    {elem.text}
+                    <div
+                      className={`px-4 py-2 rounded-xl max-w-[75%] ${elem.sender === userId ? "bg-blue-800 text-white" : "bg-neutral-800 text-white"}`}
+                    >
+                      {elem.text}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
               <div ref={messagesEndRef} />
             </div>
+
             <form
               onSubmit={createChat}
               ref={ref}

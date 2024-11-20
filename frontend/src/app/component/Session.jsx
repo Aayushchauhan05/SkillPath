@@ -21,6 +21,7 @@ const EventDialog = () => {
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.auth.currentuser?.uid);
@@ -31,6 +32,7 @@ const EventDialog = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const eventData = {
       mentorId: userId,
@@ -43,9 +45,15 @@ const EventDialog = () => {
       end: endDateTime,
     };
 
-    const response = await AxiosInstance.post("/listing/create_listing", { ...eventData });
-    console.log(response);
-    setOpen(false);
+    try {
+      const response = await AxiosInstance.post("/listing/create_listing", { ...eventData });
+      console.log(response);
+      setOpen(false);
+    } catch (error) {
+      console.error("Error creating listing", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formatDate = (date) => {
@@ -159,8 +167,8 @@ const EventDialog = () => {
                   </Popover>
                 </div>
 
-                <Button type="submit" className="mt-4">
-                  Submit
+                <Button type="submit" className="mt-4" disabled={loading}>
+                  {loading ? "Submitting..." : "Submit"}
                 </Button>
               </CardContent>
             </Card>
