@@ -252,9 +252,9 @@ fetchData()
         <div className="w-full sm:w-auto">
           <EventDialog />
         </div>
-        <div className="w-full sm:w-auto">
+        {/* <div className="w-full sm:w-auto">
           <CourseForm />
-        </div>
+        </div> */}
         <div className="w-full sm:w-auto">
         <Button 
           onClick={handleAuth}
