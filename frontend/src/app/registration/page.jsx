@@ -6,7 +6,7 @@ import { createUserFireBase } from "@/utils/firebaseAuth";
 import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { Button } from "@/components/ui/button";
@@ -27,8 +27,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
-
-toast.configure();
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -229,12 +227,13 @@ const RegistrationForm = () => {
           </Button>
         </CardFooter>
         <p>
-          Already have a account?{" "}
+          Already have an account?{" "}
           <Link href={"/login"} className="text-red-400">
             Login
           </Link>
         </p>
       </Card>
+      <ToastContainer />
     </div>
   );
 };
