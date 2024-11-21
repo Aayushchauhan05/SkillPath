@@ -158,12 +158,12 @@ const fetchMentee=useCallback( async ()=>{
        const meetLink= await createMeeting(obj);
       //  console.log(meetId,"iddddddddddddddddddddd")
         const bidId = e.target.getAttribute("data-key");
-        const conversation= await AxiosInstance.put(`/bid/updatebid/${bidId}`,{
+        if(meetLink){const conversation= await AxiosInstance.put(`/bid/updatebid/${bidId}`,{
           status:"accepted",
           mentorId,
           menteeId,
           meetLink:meetLink
-        })
+        })}
         setOpenDialog(false);
     } catch (error) {
       console.error("Error during meeting creation:", error);
