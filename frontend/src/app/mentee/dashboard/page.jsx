@@ -239,7 +239,7 @@ function Dashboard() {
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
               <Card className="sm:col-span-2" x-chunk="dashboard-05-chunk-0">
                 <CardHeader className="pb-3">
-                  <CardTitle>Your sesssions</CardTitle>
+                  <CardTitle>Mentee Dashboard</CardTitle>
                   <CardDescription className="max-w-lg leading-relaxed text-balance">
                     Introducing Our Dynamic Orders Dashboard for Seamless
                     Management and Insightful Analysis.
@@ -249,17 +249,17 @@ function Dashboard() {
               </Card>
               <Card x-chunk="dashboard-05-chunk-1">
                 <CardHeader className="pb-2">
-                  <CardDescription>Total revenue</CardDescription>
+                  <CardDescription>Total spending</CardDescription>
                   <CardTitle className="text-4xl">
                     {/* ₹ {listing.reduce((Total, elem) => {
       return elem.sessionStatus === "completed" ? Total + elem.sessionPrice : Total;
-  }, 0)} */}
+  }, 0)} */} ₹8000
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {/* <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground">
                     +25% from last week
-                  </div> */}
+                  </div>
                 </CardContent>
                 <CardFooter>
                   <Progress value={25} aria-label="25% increase" />
@@ -368,7 +368,7 @@ function Dashboard() {
                                   </div>
                                   <div>
                                     <strong>MeetLink:</strong> 
-                                    {elem?.meetId?.meetLink || "N/A"}
+                                   <a className="text-blue-500 underline" href={elem?.meetLink }> {elem?.meetLink || "N/A"}</a>
                                   </div>
                                   <div>
                                     <strong>Start Date and Time:</strong>

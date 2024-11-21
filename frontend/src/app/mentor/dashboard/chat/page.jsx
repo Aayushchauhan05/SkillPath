@@ -108,9 +108,9 @@ export default function ChatDashboard() {
 
   return (
     <div className="flex w-full h-screen text-white bg-black">
-      <aside className="w-[4vw] max-w-[300px] bg-neutral-900 border-r border-neutral-800">
+      {/* <aside className="w-[4vw] max-w-[300px] bg-neutral-900 border-r border-neutral-800">
         <SideBar />
-      </aside>
+      </aside> */}
 
       <aside className={`w-full max-w-[300px] bg-neutral-900 border-r border-neutral-800 ${showChatList ? '' : 'hidden'} sm:block`}>
         <div className="flex items-center justify-between p-4 bg-neutral-800">

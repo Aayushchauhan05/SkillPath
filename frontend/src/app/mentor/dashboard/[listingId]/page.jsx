@@ -106,7 +106,9 @@ useEffect(() => {
         { ...data }
       );
       setOpenDialog(true);
-      return response.data._id
+      console.log("dataaaaaa",response.data)
+      return response.data.meetLink
+      
       
     } catch (error) {
       console.error("Error creating meeting:", error);
@@ -134,10 +136,7 @@ const fetchMentee=useCallback( async ()=>{
     fetchMentee();
     fetchBid()
   },[mentorId])
-  useEffect(()=>{
-    fetchBid()
-    fetchListingById()
-  },[listingId])
+
 
   const handleAccept = async (e) => {
     e.preventDefault();
@@ -156,13 +155,14 @@ const fetchMentee=useCallback( async ()=>{
           code:code
       };
       setData(obj);
-       const meetId= await createMeeting(obj);
+       const meetLink= await createMeeting(obj);
+      //  console.log(meetId,"iddddddddddddddddddddd")
         const bidId = e.target.getAttribute("data-key");
         const conversation= await AxiosInstance.put(`/bid/updatebid/${bidId}`,{
           status:"accepted",
           mentorId,
           menteeId,
-          meetId:meetId
+          meetLink:meetLink
         })
         setOpenDialog(false);
     } catch (error) {
@@ -180,6 +180,10 @@ try {
   console.log(error)
 }
 }
+useEffect(()=>{
+  fetchBid()
+  fetchListingById()
+},[listingId])
 
   return (
     <div className="flex justify-center p-12 w-full h-[100vh]">
@@ -394,78 +398,76 @@ try {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Details</TableHead>
-                    <TableHead>Details</TableHead>
-                    <TableHead>Start Time</TableHead>
-                    <TableHead>End Time</TableHead>
-                    <TableHead>Topic</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {mentees.map((mentee) => (
-                    <TableRow key={mentee._id}>
-                      <TableCell>{mentee.menteeId?.username}</TableCell>
-                      <TableCell>{mentee.menteeId?.email}</TableCell>
-                      <TableCell>
-                        <a
-                          href={mentee.meetLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 underline"
-                        >
-                          {mentee.meetLink}
-                        </a>
-                      </TableCell>
-                      <TableCell>
-                      <Dialog>
-  <DialogTrigger><Eye className="w-5 h-5 text-blue-500 cursor-pointer" /></DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>User Details</DialogTitle>
-      <DialogDescription>
-        Review the details below.
-      </DialogDescription>
-    </DialogHeader>
-    <div className="space-y-4">
-      <div>
-        <strong>User Name:</strong> {mentee.menteeId?.username}
-      </div>
-      <div>
-        <strong>Email:</strong> {mentee.menteeId?.email}
-      </div>
-      <div>
-        <strong>Experience:</strong> {mentee.menteeId?.experience || "N/A"}
-      </div>
-      <div>
-        <strong>Description:</strong> {selectedMentee?.description || "N/A"}
-      </div>
-      <div>
-        <strong>Payment Amount:</strong> ${selectedMentee?.paymentAmount || "N/A"}
-      </div>
-      <div>
-        <strong>Date and Time:</strong> {new Date(selectedMentee?.dateTime).toLocaleString() || "N/A"}
-      </div>
-    </div>
-  </DialogContent>
-</Dialog>
+            <div className="h-[50vh] overflow-auto">
+  <Table className="w-full">
+    <TableHeader>
+      <TableRow>
+        <TableHead>Name</TableHead>
+        <TableHead>Email</TableHead>
+        <TableHead>Details</TableHead>
+        <TableHead>Details</TableHead>
+        <TableHead>Start Time</TableHead>
+        <TableHead>End Time</TableHead>
+        <TableHead>Topic</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      {mentees.map((mentee) => (
+        <TableRow key={mentee._id}>
+          <TableCell>{mentee.menteeId?.username}</TableCell>
+          <TableCell>{mentee.menteeId?.email}</TableCell>
+          <TableCell>
+            <a
+              href={mentee.meetLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline"
+            >
+              {mentee.meetLink}
+            </a>
+          </TableCell>
+          <TableCell>
+            <Dialog>
+              <DialogTrigger>
+                <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>User Details</DialogTitle>
+                  <DialogDescription>Review the details below.</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <strong>User Name:</strong> {mentee.menteeId?.username}
+                  </div>
+                  <div>
+                    <strong>Email:</strong> {mentee.menteeId?.email}
+                  </div>
+                  <div>
+                    <strong>Experience:</strong> {mentee.menteeId?.experience || "N/A"}
+                  </div>
+                  <div>
+                    <strong>Description:</strong> {mentee.description || "N/A"}
+                  </div>
+                  <div>
+                    <strong>Payment Amount:</strong> ${mentee.paymentAmount || "N/A"}
+                  </div>
+                  <div>
+                    <strong>Date and Time:</strong> {new Date(mentee.dateTime).toLocaleString() || "N/A"}
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </TableCell>
+          <TableCell>{new Date(mentee.startTime).toLocaleString()}</TableCell>
+          <TableCell>{new Date(mentee.endTime).toLocaleString()}</TableCell>
+          <TableCell>{sessionDetails.topic}</TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</div>
 
-                      </TableCell>
-                      <TableCell>
-                        {new Date(mentee.startTime).toLocaleString()}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(mentee.endTime).toLocaleString()}
-                      </TableCell>
-                      <TableCell>{sessionDetails.topic}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
             </CardContent>
             <CardFooter>
               

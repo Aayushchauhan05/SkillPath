@@ -241,7 +241,7 @@ fetchData()
             <Card className="w-full max-w-4xl p-4 mx-auto md:col-span-2">
       <CardHeader className="space-y-4">
         <CardTitle className="text-xl font-bold md:text-2xl">
-          Your sessions
+         Mentor Dashboard
         </CardTitle>
         <CardDescription className="max-w-lg text-sm leading-relaxed md:text-base">
           Introducing Our Dynamic Orders Dashboard for Seamless
