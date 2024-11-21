@@ -63,7 +63,7 @@ const RegistrationForm = () => {
     
     setIsLoading(true);
     try {
-      // Create user in Firebase Authentication
+     
       const userCredential = await createUserWithEmailAndPassword(
         auth, 
         formData.email, 
@@ -71,12 +71,12 @@ const RegistrationForm = () => {
       );
       const user = userCredential.user;
 
-     
+      
       await sendEmailVerification(user);
       toast.info("Verification email sent. Please check your inbox.");
 
      
-      await setDoc(doc(db, "users", user.uid), {
+      await setDoc(doc(db, "user", user.uid), {
         username: formData.username,
         email: formData.email,
         role: formData.role,
