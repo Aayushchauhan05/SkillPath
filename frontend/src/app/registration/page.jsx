@@ -1,13 +1,14 @@
-"use client";
-
-import AxiosInstance from "@/lib/AxiosInstance";
-import { auth, db } from "@/utils/firebase";
-import { createUserFireBase } from "@/utils/firebaseAuth";
-import { doc, setDoc } from "firebase/firestore";
-import { useRouter } from "next/navigation";
+"use client"
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
+
+import { auth, db } from "@/utils/firebase";
+import AxiosInstance from "@/lib/AxiosInstance";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -36,85 +36,110 @@ const RegistrationForm = () => {
     confirmPassword: "",
     role: "mentee",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const validateForm = () => {
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match!");
+      return false;
+    }
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters long!");
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match!");
-      return;
-    }
-
+    
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
     try {
-      await createUserFireBase({
+      // Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(
+        auth, 
+        formData.email, 
+        formData.password
+      );
+      const user = userCredential.user;
+
+     
+      await sendEmailVerification(user);
+      toast.info("Verification email sent. Please check your inbox.");
+
+     
+      await setDoc(doc(db, "users", user.uid), {
+        username: formData.username,
         email: formData.email,
-        password: formData.password,
+        role: formData.role,
+        createdAt: new Date()
       });
 
-      const user = auth.currentUser;
-      if (user) {
-        await user.sendEmailVerification();
-        toast.info("Verification email sent. Please verify your email.");
-
-        await setDoc(doc(db, "user", user.uid), {
-          ...formData,
-          password: "",
-          confirmPassword: "",
-        });
-
-        await AxiosInstance.post("/Auth/register_user", {
-          _id: user.uid,
-          ...formData,
-          password: "",
-          confirmPassword: "",
-        });
-
-        const isVerified = await waitForEmailVerification(user);
-        if (!isVerified) {
-          throw new Error("Email verification failed.");
-        }
-
-        toast.success("Registration successful!");
-        router.push("/login");
+     
+      const verified = await waitForEmailVerification(user);
+      if (!verified) {
+        throw new Error("Email verification timeout");
       }
+
+     try{
+      await AxiosInstance.post("/Auth/register_user", {
+        _id: user.uid,
+        username: formData.username,
+        email: formData.email,
+        role: formData.role
+      });
+     }catch(erro){
+      toast.error("username or email already exist ");
+     }
+     
+
+      toast.success("Registration successful!");
+      router.push("/login");
+      setIsLoading(false);
     } catch (error) {
       toast.error(`Registration failed: ${error.message}`);
-
-      const user = auth.currentUser;
-      if (user) {
-        await user.delete();
-        toast.info("User registration rolled back.");
+      
+      
+      if (auth.currentUser) {
+        await auth.currentUser.delete();
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const waitForEmailVerification = (user) => {
     return new Promise((resolve) => {
-      const interval = setInterval(async () => {
+      let attempts = 0;
+      const maxAttempts = 20; 
+
+      const verificationInterval = setInterval(async () => {
         await user.reload();
+        attempts++;
+
         if (user.emailVerified) {
-          clearInterval(interval);
+          clearInterval(verificationInterval);
           resolve(true);
         }
-      }, 3000);
 
-      setTimeout(() => {
-        clearInterval(interval);
-        resolve(false);
-      }, 300000);
+        if (attempts >= maxAttempts) {
+          clearInterval(verificationInterval);
+          resolve(false);
+        }
+      }, 15000); // Check every 15 seconds
     });
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-black">
+    <div className="flex items-center justify-center min-h-screen bg-black">
       <Card className="w-full max-w-md p-6 bg-gray-900 border border-gray-700 shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-gray-100">
@@ -195,7 +220,7 @@ const RegistrationForm = () => {
                 name="role"
                 value={formData.role}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, role: value })
+                  setFormData(prev => ({ ...prev, role: value }))
                 }
               >
                 <SelectTrigger className="text-gray-300 bg-gray-800 border-gray-700">
@@ -207,31 +232,26 @@ const RegistrationForm = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="space-y-1.5">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full text-gray-100 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {isLoading ? "Registering..." : "Register"}
+              </Button>
+            </div>
           </form>
         </CardContent>
-        <CardFooter className="flex justify-end space-x-2">
-          <Button
-            variant="outline"
-            type="button"
-            onClick={() => router.push("/")}
-            className="text-gray-300 border-gray-700 hover:bg-gray-700"
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            onClick={handleSubmit}
-            className="text-gray-100 bg-indigo-600 hover:bg-indigo-700"
-          >
-            Register
-          </Button>
+        <CardFooter className="flex flex-col items-center space-y-2">
+          <p className="text-sm text-gray-400">
+            Already have an account?{" "}
+            <Link href="/login" className="text-red-400 hover:underline">
+              Login
+            </Link>
+          </p>
         </CardFooter>
-        <p>
-          Already have an account?{" "}
-          <Link href={"/login"} className="text-red-400">
-            Login
-          </Link>
-        </p>
       </Card>
       <ToastContainer />
     </div>
