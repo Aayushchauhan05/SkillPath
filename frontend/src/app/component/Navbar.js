@@ -12,7 +12,12 @@ export default function Navbar() {
 
   useEffect(() => {
     const storedRole = Cookies.get("role");
+    if(!storedRole){
+      const role=localStorage.getItem("role")
+      setRole(role);  
+    }
     setRole(storedRole);
+   
   }, []);
 
   const handleLogout = () => {
