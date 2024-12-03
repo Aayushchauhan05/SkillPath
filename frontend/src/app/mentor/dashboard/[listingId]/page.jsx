@@ -163,6 +163,7 @@ const fetchMentee=useCallback( async ()=>{
           mentorId,
           menteeId,
           meetLink:meetLink
+          ,...obj
         })}
         setOpenDialog(false);
     } catch (error) {
