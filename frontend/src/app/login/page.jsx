@@ -44,6 +44,7 @@ const LoginForm = () => {
     }
 
     const userData = querySnapshot.docs[0].data();
+ localStorage.setItem("role", userData.role)
     Cookies.set("role", userData.role); 
   };
 

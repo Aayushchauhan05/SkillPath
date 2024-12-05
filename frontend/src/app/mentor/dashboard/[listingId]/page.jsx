@@ -274,7 +274,7 @@ useEffect(()=>{
         <strong>Description:</strong> {mentee?.description || "N/A"}
       </div>
       <div>
-        <strong>Payment Amount:</strong> ${mentee?.paymentAmount || "N/A"}
+        <strong>Payment Amount:</strong> ${mentee?.payingAmount || "N/A"}
       </div>
       <div>
         <strong>Start Date and Time:</strong> {new Date(mentee.listingId?.start).toLocaleString() || "N/A"}
@@ -460,8 +460,8 @@ useEffect(()=>{
               </DialogContent>
             </Dialog>
           </TableCell>
-          <TableCell>{new Date(mentee.startTime).toLocaleString()}</TableCell>
-          <TableCell>{new Date(mentee.endTime).toLocaleString()}</TableCell>
+          <TableCell>{new Date(mentee.startDate).toLocaleString()}</TableCell>
+          <TableCell>{new Date(mentee.endDate).toLocaleString()}</TableCell>
           <TableCell>{sessionDetails.topic}</TableCell>
         </TableRow>
       ))}
