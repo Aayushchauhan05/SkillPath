@@ -44,6 +44,7 @@ function Page() {
                             <p className='text-lg'>mentor email: {elem.mentorId.email}</p>
                             <div className="justify-end card-actions">
                                 <Link href={`/mentee/marketplace/${elem._id}`} className="btn btn-primary">Visit</Link>
+                                
                             </div>
                         </div>
                     </div>

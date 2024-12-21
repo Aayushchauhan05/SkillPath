@@ -234,6 +234,7 @@ export default function Page() {
                     <Label htmlFor="payingAmount">Paying Amount</Label>
                     <Input id="payingAmount" value={bid.payingAmount} onChange={handleBidChange} />
                   </div>
+                  
                 </>
               )}
             </CardContent>
