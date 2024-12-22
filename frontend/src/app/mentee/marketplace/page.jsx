@@ -39,7 +39,7 @@ function Page() {
     return (
         <div>
             <MenteeSideBar />
-            <div className="flex items-center justify-center w-full mt-8">
+            <div className="flex items-center justify-center w-full mt-2">
                 <div className="w-full max-w-sm min-w-[200px]">
                     <div className="relative">
                         <input
@@ -69,7 +69,7 @@ function Page() {
                     </div>
                 </div>
             </div>
-            <div className="grid w-[92vw] h-full justify-center overflow-y-auto md:ml-24">
+            <div className="grid w-[92vw] h-full justify-center md:ml-24">
                 {filteredListings.map((elem, index) => (
                     <div
                         key={index}
