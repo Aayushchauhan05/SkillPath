@@ -172,6 +172,17 @@ fetchData()
    
     localStorage.setItem("oAuthToken", JSON.stringify(tokens));
     console.log("OAuth tokens stored:", tokens);
+    if (!userId) {
+      console.error('User ID is undefined');
+      return;
+    }
+    const refreshtoken= JSON.stringify(tokens)
+    console.log("token>>>>",refreshtoken.refresh_token)
+    if(refreshtoken.refresh_token){
+      const tokenSave= await AxiosInstance(`/Auth/update/${userId}`,{
+        refresh_token:refreshtoken.refresh_token
+      })
+    }
 
     window.history.replaceState({}, document.title, window.location.pathname);
   } catch (error) {
