@@ -47,7 +47,7 @@ export default function QuizDashboard() {
   const averageScore = totalQuestions > 0 ? (totalScore / totalQuestions) * 100 : 0;
 
   return (
-    <div className="container h-screen px-4 py-8 mx-auto">
+    <div className="container h-screen px-40 py-8 mx-auto">
       <MenteeSideBar />
       <h1 className="mb-8 text-3xl font-bold text-center">Quiz Dashboard</h1>
 

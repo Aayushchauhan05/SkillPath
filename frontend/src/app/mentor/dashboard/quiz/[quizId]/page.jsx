@@ -45,7 +45,7 @@ return ;
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen pl-10">
+    <div className="flex flex-col items-center justify-center h-screen px-32">
     <SideBar/>
       <h1 className="mb-10 text-7xl">Quiz Detail</h1>
       <Tabs defaultValue="quiz" className="w-[80vw] h-[70vh]">

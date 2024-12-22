@@ -86,7 +86,7 @@ export default function Page() {
     : 0;
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 ">
+    <div className="flex items-center justify-center min-h-screen p-4 px-32">
       <MenteeSideBar />
       <Card className="w-full max-w-4xl">
         {quizData ? (
