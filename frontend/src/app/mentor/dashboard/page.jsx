@@ -95,6 +95,7 @@ import SideBar from "@/app/component/MentorSideBar"
 import CourseForm from "@/app/component/CourseForm"
 import { FaGoogle } from "react-icons/fa"
 import { useAuth } from "@/context/context";
+import QuizForm from "@/app/component/QuizForm"
 export const description =
   "An orders dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. The main area has a list of recent orders with a filter and export button. The main area also has a detailed view of a single order with order details, shipping information, billing information, customer information, and payment information."
 
@@ -252,9 +253,9 @@ fetchData()
         <div className="w-full sm:w-auto">
           <EventDialog />
         </div>
-        {/* <div className="w-full sm:w-auto">
-          <CourseForm />
-        </div> */}
+        <div className="w-full sm:w-auto">
+          <QuizForm />
+        </div>
         <div className="w-full sm:w-auto">
         <Button 
           onClick={handleAuth}

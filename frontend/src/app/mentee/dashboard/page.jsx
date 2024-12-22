@@ -1,11 +1,11 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 import {
   Dialog,
   DialogContent,
@@ -14,9 +14,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-import { TrendingUp } from "lucide-react"
+} from "@/components/ui/dialog";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { TrendingUp } from "lucide-react";
 import {
   BaggageClaimIcon,
   ChevronLeft,
@@ -36,10 +36,10 @@ import {
   ShoppingCart,
   Truck,
   Users2,
-  Eye
-} from "lucide-react"
+  Eye,
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -47,8 +47,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -56,7 +56,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -65,16 +65,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
-} from "@/components/ui/pagination"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+} from "@/components/ui/pagination";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Table,
   TableBody,
@@ -82,18 +82,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
@@ -132,7 +127,6 @@ function Dashboard() {
       return;
     }
     try {
-
       const response = await AxiosInstance.get(`/bid/bids/mentee/${userId}`);
       setSession(response.data);
     } catch (e) {
@@ -145,42 +139,9 @@ function Dashboard() {
   return (
     <div className="flex flex-col w-full min-h-screen bg-muted/40">
       <MenteeSideBar />
-      {/* <Card>
-        <CardHeader>
-          <CardTitle>Bar Chart</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig}>
-            <BarChart accessibilityLayer data={chartData}>
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="month"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                tickFormatter={(value) => value.slice(0, 3)}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
-            </BarChart>
-          </ChartContainer>
-        </CardContent>
-        <CardFooter className="flex-col items-start gap-2 text-sm">
-          <div className="flex gap-2 font-medium leading-none">
-            Trending up by 5.2% this month <TrendingUp className="w-4 h-4" />
-          </div>
-          <div className="leading-none text-muted-foreground">
-            Showing total visitors for the last 6 months
-          </div>
-        </CardFooter>
-      </Card> */}
+      
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <header className="sticky top-0 z-30 flex items-center gap-4 px-4 border-b h-14 bg-background sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          
           <Breadcrumb className="hidden md:flex">
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -253,7 +214,8 @@ function Dashboard() {
                   <CardTitle className="text-4xl">
                     {/* ₹ {listing.reduce((Total, elem) => {
       return elem.sessionStatus === "completed" ? Total + elem.sessionPrice : Total;
-  }, 0)} */} ₹8000
+  }, 0)} */}{" "}
+                    ₹8000
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -281,13 +243,23 @@ function Dashboard() {
                 </CardFooter>
               </Card>
             </div>
-            <Tabs defaultValue="week">
-             
-              <TabsContent value="week">
-                <Card x-chunk="dashboard-05-chunk-3">
+            <Tabs defaultValue="accepted">
+              {/* Tabs List */}
+              <TabsList>
+                <TabsTrigger value="accepted">Accepted Bids</TabsTrigger>
+                <TabsTrigger value="pendingRejected">
+                  Pending & Rejected Bids
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Accepted Bids Tab */}
+              <TabsContent value="accepted">
+                <Card>
                   <CardHeader className="px-7">
-                    <CardTitle>Bids</CardTitle>
-                    <CardDescription>Bids details.</CardDescription>
+                    <CardTitle>Bids - Accepted</CardTitle>
+                    <CardDescription>
+                      Bids that have been accepted.
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Table>
@@ -311,83 +283,217 @@ function Dashboard() {
                       </TableHeader>
 
                       <TableBody>
-                        {session.map((elem) => (
-                          <TableRow key={elem.listingId} className="bg-accent">
-                            <TableCell>
-                              <div className="font-medium">{elem?.topic}</div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                {elem.mentorId?.email}
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              {elem.menteeId?.role}
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <Badge className="text-xs" variant="secondary">
-                                {elem?.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {elem.meetId?.start}
-                            </TableCell>
-                            <TableCell className="text-right">{`₹ ${elem?.payingAmount}`}</TableCell>
-                            <TableCell className="hidden md:table-cell">
-                            <Dialog>
-                               <DialogTrigger>
-                                <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
-                                 </DialogTrigger>
-                               <DialogContent>
-                                  <DialogHeader>
-                                     <DialogTitle>
-                                     User Details
-                                     </DialogTitle>
-                                  <DialogDescription>
-                                    Review the details below.
-                                      </DialogDescription>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <strong>User Name:</strong>
-                                    {elem.menteeId?.username}
-                                  </div>
-                                  <div>
-                                    <strong>Email:</strong>
-                                    {elem.menteeId?.email}
-                                  </div>
-                                  <div>
-                                    <strong>Experience:</strong>
-                                    {elem.menteeId?.experience || "N/A"}
-                                  </div>
-                                  <div>
-                                    <strong>Description:</strong>
-                                    {elem?.description || "N/A"}
-                                  </div>
-                                  <div>
-                                    <strong>Payment Amount:</strong> ₹
-                                    {elem?.paymentAmount || "N/A"}
-                                  </div>
-                                  <div>
-                                    <strong>MeetLink:</strong> 
-                                   <a className="text-blue-500 underline" href={elem?.meetLink }> {elem?.meetLink || "N/A"}</a>
-                                  </div>
-                                  <div>
-                                    <strong>Start Date and Time:</strong>
-                                    {new Date(
-                                      elem?.listingId?.start
-                                    ).toLocaleString() || "N/A"}
-                                  </div>
-                                  <div>
-                                    <strong>End Date and Time:</strong>
-                                    {new Date(
-                                      elem?.listingId?.end
-                                    ).toLocaleString() || "N/A"}
-                                  </div>
+                        {session
+                          .filter((bid) => bid.status === "accepted")
+                          .map((elem) => (
+                            <TableRow
+                              key={elem.listingId}
+                              className="bg-accent"
+                            >
+                              <TableCell>
+                                <div className="font-medium">{elem?.topic}</div>
+                                <div className="hidden text-sm text-muted-foreground md:inline">
+                                  {elem.mentorId?.email}
                                 </div>
-                                 </DialogContent>
-                              </Dialog>
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                                {elem.menteeId?.role}
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                                <Badge className="text-xs" variant="secondary">
+                                  {elem?.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {elem.meetId?.start}
+                              </TableCell>
+                              <TableCell className="text-right">{`₹ ${elem?.payingAmount}`}</TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                <Dialog>
+                                  <DialogTrigger>
+                                    <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>User Details</DialogTitle>
+                                      <DialogDescription>
+                                        Review the details below.
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="space-y-4">
+                                      <div>
+                                        <strong>User Name:</strong>{" "}
+                                        {elem.menteeId?.username}
+                                      </div>
+                                      <div>
+                                        <strong>Email:</strong>{" "}
+                                        {elem.menteeId?.email}
+                                      </div>
+                                      <div>
+                                        <strong>Experience:</strong>{" "}
+                                        {elem.menteeId?.experience || "N/A"}
+                                      </div>
+                                      <div>
+                                        <strong>Description:</strong>{" "}
+                                        {elem?.description || "N/A"}
+                                      </div>
+                                      <div>
+                                        <strong>Payment Amount:</strong> ₹{" "}
+                                        {elem?.paymentAmount || "N/A"}
+                                      </div>
+                                      <div>
+                                        <strong>MeetLink:</strong>{" "}
+                                        <a
+                                          className="text-blue-500 underline"
+                                          href={elem?.meetLink}
+                                        >
+                                          {elem?.meetLink || "N/A"}
+                                        </a>
+                                      </div>
+                                      <div>
+                                        <strong>Start Date and Time:</strong>
+                                        {new Date(
+                                          elem?.listingId?.start
+                                        ).toLocaleString() || "N/A"}
+                                      </div>
+                                      <div>
+                                        <strong>End Date and Time:</strong>
+                                        {new Date(
+                                          elem?.listingId?.end
+                                        ).toLocaleString() || "N/A"}
+                                      </div>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Pending & Rejected Bids Tab */}
+              <TabsContent value="pendingRejected">
+                <Card>
+                  <CardHeader className="px-7">
+                    <CardTitle>Bids - Pending & Rejected</CardTitle>
+                    <CardDescription>
+                      Bids that are either pending or rejected.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Bids</TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Type
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Status
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Date
+                          </TableHead>
+                          <TableHead className="text-right">Amount</TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            View
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+
+                      <TableBody>
+                        {session
+                          .filter(
+                            (bid) =>
+                              bid.status === "pending" ||
+                              bid.status === "rejected"
+                          )
+                          .map((elem) => (
+                            <TableRow
+                              key={elem.listingId}
+                              className="bg-accent"
+                            >
+                              <TableCell>
+                                <div className="font-medium">{elem?.topic}</div>
+                                <div className="hidden text-sm text-muted-foreground md:inline">
+                                  {elem.mentorId?.email}
+                                </div>
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                                {elem.menteeId?.role}
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                                <Badge className="text-xs" variant="secondary">
+                                  {elem?.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {elem.meetId?.start}
+                              </TableCell>
+                              <TableCell className="text-right">{`₹ ${elem?.payingAmount}`}</TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                <Dialog>
+                                  <DialogTrigger>
+                                    <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>User Details</DialogTitle>
+                                      <DialogDescription>
+                                        Review the details below.
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="space-y-4">
+                                      <div>
+                                        <strong>User Name:</strong>{" "}
+                                        {elem.menteeId?.username}
+                                      </div>
+                                      <div>
+                                        <strong>Email:</strong>{" "}
+                                        {elem.menteeId?.email}
+                                      </div>
+                                      <div>
+                                        <strong>Experience:</strong>{" "}
+                                        {elem.menteeId?.experience || "N/A"}
+                                      </div>
+                                      <div>
+                                        <strong>Description:</strong>{" "}
+                                        {elem?.description || "N/A"}
+                                      </div>
+                                      <div>
+                                        <strong>Payment Amount:</strong> ₹{" "}
+                                        {elem?.paymentAmount || "N/A"}
+                                      </div>
+                                      <div>
+                                        <strong>MeetLink:</strong>{" "}
+                                        <a
+                                          className="text-blue-500 underline"
+                                          href={elem?.meetLink}
+                                        >
+                                          {elem?.meetLink || "N/A"}
+                                        </a>
+                                      </div>
+                                      <div>
+                                        <strong>Start Date and Time:</strong>
+                                        {new Date(
+                                          elem?.listingId?.start
+                                        ).toLocaleString() || "N/A"}
+                                      </div>
+                                      <div>
+                                        <strong>End Date and Time:</strong>
+                                        {new Date(
+                                          elem?.listingId?.end
+                                        ).toLocaleString() || "N/A"}
+                                      </div>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </TableBody>
                     </Table>
                   </CardContent>

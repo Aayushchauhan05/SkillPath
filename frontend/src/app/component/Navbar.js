@@ -11,18 +11,15 @@ export default function Navbar() {
   const [role, setRole] = useState(null);
 
   useEffect(() => {
-    const storedRole = Cookies.get("role");
-    if(!storedRole){
-      const role=localStorage.getItem("role")
+    const role=localStorage.getItem("role")
       setRole(role);  
-    }
-    setRole(storedRole);
    
   }, []);
 
   const handleLogout = () => {
     Cookies.remove("role");
     removeToken()
+    localStorage.removeItem("role")
     setRole(null);
     removeCode();
     router.push("/login");
@@ -82,9 +79,9 @@ export default function Navbar() {
 
       <div className="hidden navbar-center lg:flex">
         <ul className="space-x-4 menu menu-horizontal">
-          <li>
+          {/* <li>
             <Link href={"/"}>Home</Link>
-          </li>
+          </li> */}
           {token && role && (
             <>
               {role === "mentor" ? (
@@ -107,14 +104,14 @@ export default function Navbar() {
               )}
             </>
           )}
-          <li>
+          {/* <li>
             <Link href={"/chat"}>Chat</Link>
-          </li>
+          </li> */}
         </ul>
       </div>
 
       <div className="space-x-4 navbar-end">
-        {token ? (
+        {token && (role=="mentee" || role =="mentor")? (
           <button onClick={handleLogout} className="btn btn-outline btn-error">
             Logout
           </button>

@@ -46,6 +46,9 @@ const LoginForm = () => {
     const userData = querySnapshot.docs[0].data();
  localStorage.setItem("role", userData.role)
     Cookies.set("role", userData.role); 
+    // Cookies.set("user", user.user.uid);
+    router.push(`/${userData.role}/dashboard`);
+    setLoading(false);
   };
 
   const handleSubmit = async (e) => {
@@ -61,8 +64,7 @@ const LoginForm = () => {
         addToken(user._tokenResponse.idToken);
         Cookies.set("token", user._tokenResponse.idToken, { expires: 7 });
         await getUser(user.user);
-        Cookies.set("user", user.user.uid);
-        router.push("/");
+      
       }
     } catch (error) {
       console.error("Error during sign-in:", error);
@@ -81,8 +83,6 @@ const LoginForm = () => {
         dispatch(loadUser());
         Cookies.set("token", user._tokenResponse.idToken, { expires: 7 });
         await getUser(user.user);
-        Cookies.set("user", user.user.uid);
-        router.push("/");
       }
     } catch (error) {
       console.error("Error during Google login:", error);

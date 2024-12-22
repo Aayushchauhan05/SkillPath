@@ -65,6 +65,18 @@ export default function SideBar() {
             </TooltipTrigger>
             <TooltipContent side="right">Chat</TooltipContent>
           </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/mentor/dashboard/quiz"
+                className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 text-muted-foreground hover:text-foreground md:h-8 md:w-8"
+              >
+                <Book className="w-5 h-5" />
+                <span className="sr-only">Quiz</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Quiz</TooltipContent>
+          </Tooltip>
 
           {/* Marketplace Link */}
           <Tooltip>
@@ -131,12 +143,20 @@ export default function SideBar() {
                 Chat
               </Link>
               <Link
+                href="/mentor/dashboardquiz"
+                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+              >
+                <Book className="w-5 h-5" />
+                Quiz
+              </Link>
+              <Link
                 href="/mentor/marketplace"
                 className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
               >
                 <Store className="w-5 h-5" />
                 Marketplace
               </Link>
+              
               <Link
                 href="/mentor/appointments"
                 className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"

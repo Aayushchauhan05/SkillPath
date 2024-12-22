@@ -65,7 +65,18 @@ export default function SideBar() {
             </TooltipTrigger>
             <TooltipContent side="right">Chat</TooltipContent>
           </Tooltip>
-
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/mentee/dashboard/quiz"
+                className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 text-muted-foreground hover:text-foreground md:h-8 md:w-8"
+              >
+                <Book className="w-5 h-5" />
+                <span className="sr-only">Quiz</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Quiz</TooltipContent>
+          </Tooltip>
           {/* Marketplace Link */}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -110,7 +121,7 @@ export default function SideBar() {
                 className="flex items-center justify-center w-10 h-10 gap-2 text-lg font-semibold rounded-full group shrink-0 bg-primary text-primary-foreground md:text-base"
               >
                 <Package2 className="w-5 h-5 transition-all group-hover:scale-110" />
-                <span className="sr-only">Acme Inc</span>
+                <span className="sr-only">Skill Path</span>
               </Link>
               {/* Links in Mobile Menu */}
               <Link
