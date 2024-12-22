@@ -143,7 +143,11 @@ fetchData()
     }}
     const handleAuth = async () => {
       try {
-        
+        if (!userId) {
+          console.error('User ID is undefined for meet auth');
+          alert("try again to authorise")
+          return;
+        }
        
     console.log("Fetching authorization URL...");
     const response = await AxiosInstance.get("auth/url");
@@ -172,10 +176,7 @@ fetchData()
    
     localStorage.setItem("oAuthToken", JSON.stringify(tokens));
     console.log("OAuth tokens stored:", tokens);
-    if (!userId) {
-      console.error('User ID is undefined');
-      return;
-    }
+   
     const refreshtoken= JSON.stringify(tokens)
     console.log("token>>>>",refreshtoken.refresh_token)
     if(refreshtoken.refresh_token){
