@@ -259,9 +259,9 @@ fetchData()
         <div className="w-full sm:w-auto">
         <Button 
           onClick={handleAuth}
-          className="flex items-center w-[5vw] gap-2 sm:w-auto"
+          className="flex items-center min-w-[4vw] gap-2 sm:w-auto "
         >
-          set-up Auth for meet
+          Auth for meet
           <FaGoogle className="w-4 h-4" />
         </Button>
         </div>

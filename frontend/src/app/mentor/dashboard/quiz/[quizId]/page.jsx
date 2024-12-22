@@ -22,17 +22,22 @@ export function TabsDemo() {
   const { quizId } = useParams();
 
   useEffect(() => {
-    if (quizId) {
+    
       const fetchQuizData = async () => {
         try {
+
           const response = await AxiosInstance.get(`/quiz/quiz/${quizId}`);
           setData(response.data);
         } catch (error) {
           console.error("Failed to fetch quiz data:", error);
         }
       };
+      if(!quizId){
+alert("Something went wrong")
+return ;
+      }
       fetchQuizData();
-    }
+    
   }, [quizId]);
 
   if (!data) {
@@ -40,7 +45,7 @@ export function TabsDemo() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center h-screen pl-10">
     <SideBar/>
       <h1 className="mb-10 text-7xl">Quiz Detail</h1>
       <Tabs defaultValue="quiz" className="w-[80vw] h-[70vh]">

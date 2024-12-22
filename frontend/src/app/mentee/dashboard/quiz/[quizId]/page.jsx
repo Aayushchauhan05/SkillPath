@@ -72,6 +72,7 @@ export default function Page() {
         status: "completed",
         score: updatedScore,
       });
+      
       console.log("Quiz updated successfully");
     } catch (error) {
       console.error("Failed to update quiz:", error);

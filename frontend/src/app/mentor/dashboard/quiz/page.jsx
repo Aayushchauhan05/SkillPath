@@ -74,7 +74,7 @@ try {
 fetchData()
   },userId)
   return (
-    <div className="container h-[100vh] p-4 mx-auto">
+    <div className="container h-[100vh] p-4 mx-auto pl-10">
     <SideBar/>
       <Header />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
