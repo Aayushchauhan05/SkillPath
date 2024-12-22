@@ -26,7 +26,7 @@ export function TabsDemo() {
       const fetchQuizData = async () => {
         try {
 
-          const response = await AxiosInstance.get(`/quiz/quiz/${quizId}`);
+          const response = await AxiosInstance.get(`/quiz/${quizId}`);
           setData(response.data);
         } catch (error) {
           console.error("Failed to fetch quiz data:", error);
