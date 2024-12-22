@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MdAccountCircle, MdQuiz, MdInfo } from "react-icons/md";
 import SideBar from "@/app/component/MentorSideBar";
 import AxiosInstance from "@/lib/AxiosInstance";
-import SideBar from "@/app/component/MentorSideBar"
+
 export function TabsDemo() {
   const [data, setData] = useState(null);
   const router = useRouter();
