@@ -180,7 +180,7 @@ fetchData()
     const refreshtoken= JSON.stringify(tokens)
     console.log("token>>>>",tokens.refresh_token)
     if(tokens.refresh_token){
-      const tokenSave= await AxiosInstance(`/Auth/update/${userId}`,{
+      const tokenSave= await AxiosInstance.put(`/Auth/update/${userId}`,{
         refresh_token:tokens.refresh_token
       })
     }
