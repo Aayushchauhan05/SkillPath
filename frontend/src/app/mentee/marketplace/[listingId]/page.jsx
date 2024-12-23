@@ -174,7 +174,7 @@ export default function Page() {
                   <div className="flex items-center space-y-1">
                     <FaDollarSign className="mr-2 text-red-500" />
                     <Label>Session Price:</Label>
-                    <p>${data.sessionPrice}</p>
+                    <p>₹{data.sessionPrice}</p>
                   </div>
                   <div className="flex items-center space-y-1">
                     <FaHourglassHalf className="mr-2 text-gray-500" />
