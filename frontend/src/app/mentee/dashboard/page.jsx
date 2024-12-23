@@ -215,12 +215,12 @@ function Dashboard() {
                     {/* ₹ {listing.reduce((Total, elem) => {
       return elem.sessionStatus === "completed" ? Total + elem.sessionPrice : Total;
   }, 0)} */}{" "}
-                    ₹8000
+                    ₹0
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xs text-muted-foreground">
-                    +25% from last week
+                    0% from last week
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -231,11 +231,11 @@ function Dashboard() {
               <Card x-chunk="dashboard-05-chunk-2">
                 <CardHeader className="pb-2">
                   <CardDescription>This Month</CardDescription>
-                  <CardTitle className="text-4xl">₹ 4,329</CardTitle>
+                  <CardTitle className="text-4xl">₹0</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xs text-muted-foreground">
-                    +10% from last month
+                    0% from last month
                   </div>
                 </CardContent>
                 <CardFooter>
